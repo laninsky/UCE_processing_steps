@@ -1,0 +1,2 @@
+# UCE_processing_steps
+The general workflow for processing UCE data that I use. One big acknowledgment: almost all the code I use comes from Carl Oliveros (https://github.com/carloliveros/uce-scripts). The code also makes extensive use of phyluce (https://github.com/faircloth-lab/phyluce) and cloudforest (https://github.com/ngcrawford/CloudForest), written by Brant Faircloth and Nick Crawford respectively.
