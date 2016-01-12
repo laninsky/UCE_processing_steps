@@ -5,7 +5,7 @@ The first steps involve cleaning the reads and extracting the UCEs from the over
 
 After this, the first thing I do is rename all the files to lower case for the sample names, as this causes issues when converting files to phylip. I conduct the intialsteps on our local linux computers (e.g. the complabs). Things that need to be in paths: Phyluce needs to be in python path, raxml needs to be in path.
 
-STEP 3 - get the probes for matching the contigs to
+#STEP 3A - get the probes for matching the contigs to
 ```
 wget https://raw.githubusercontent.com/faircloth-lab/uce-probe-sets/master/uce-5k-probe-set/uce-5k-probes.fasta
 ```
@@ -13,11 +13,11 @@ Making a log directory
 ```
 mkdir logs
 ```
-STEP 3 - matching the trinity contigs to the probes
+#STEP 3B - matching the trinity contigs to the probes
 ```
 python /public/uce/phyluce/bin/assembly/match_contigs_to_probes.py --contigs /home/a499a400/gekko/trinity-assemblies/contigs/ --probes uce-5k-probes.fasta --output lastz --log-path logs
 ```
-STEP 4A - used Scott and Carl's previous dataset.conf file. Dataset name is 'All'. 
+#STEP 4A - used Scott and Carl's previous dataset.conf file. Dataset name is 'All'. 
 ```
 python /public/uce/phyluce/bin/assembly/get_match_counts.py --locus-db /home/a499a400/gekko/lastz/probe.matches.sqlite --taxon-list-config dataset.conf --taxon-group 'gekko' --output /home/a499a400/gekko/complete.conf --log-path logs
 
@@ -32,13 +32,13 @@ Traceback (most recent call last):
     len(organisms),
 TypeError: object of type 'NoneType' has no len()
 ```
-STEP 4B
+#STEP 4B
 ```
 python /public/uce/phyluce/bin/assembly/get_fastas_from_match_counts.py --contigs /home/a499a400/gekko/trinity-assemblies/contigs/ --locus-db /home/a499a400/gekko/lastz/probe.matches.sqlite --match-count-output /home/a499a400/gekko/complete.conf --output complete_fasta --log-path logs
 
 python /public/uce/phyluce/bin/assembly/get_fastas_from_match_counts.py --contigs /home/a499a400/gekko/trinity-assemblies/contigs/ --locus-db /home/a499a400/gekko/lastz/probe.matches.sqlite --match-count-output /home/a499a400/gekko/incomplete.conf --output incomplete_fasta --incomplete-matrix incomplete.nostrict --log-path logs
 ```
-STEP 7A
+#STEP 7A
 ```
 python /public/uce/phyluce/bin/align/seqcap_align_2.py --fasta complete_fasta --output complete_aligned --output-format fasta --taxa 33 --aligner mafft --cores 12 --log-path logs
 
@@ -48,31 +48,32 @@ python /public/uce/phyluce/bin/align/get_only_loci_with_min_taxa.py --alignments
 
 python /public/uce/phyluce/bin/align/add_missing_data_designators.py --alignments incomplete_75perc_aligned --output incomplete_75perc_aligned_w_missing --input-format fasta --output-format fasta --match-count-output /home/a499a400/gekko/incomplete.conf --incomplete-matrix incomplete.nostrict --cores 9 --log-path logs
 ```
-STEP 7B
+#STEP 7B
 ```
 python /public/uce/phyluce/bin/align/get_gblocks_trimmed_alignments_from_untrimmed.py --alignments complete_aligned --output complete_gbtrimmed --b2 0.65 --cores 9 --log-path logs
 
 python /public/uce/phyluce/bin/align/get_gblocks_trimmed_alignments_from_untrimmed.py --alignments incomplete_75perc_aligned_w_missing --output incomplete_75perc_gbtrimmed --b2 0.65 --cores 9 --log-path logs 
 ```
-STEP 7C
+#STEP 7C
 ```
 python /public/uce/phyluce/bin/align/remove_locus_name_from_nexus_lines.py --taxa 33 --alignment complete_gbtrimmed --output complete_renamed --cores 9 --log-path logs
 
 python /public/uce/phyluce/bin/align/remove_locus_name_from_nexus_lines.py --taxa 33 --alignment incomplete_75perc_gbtrimmed --output incomplete_75perc_renamed --cores 9 --log-path logs
 ```
-STEP7D
+#STEP 7D
 ```
 python /public/uce/phyluce/bin/align/get_align_summary_data.py --alignments complete_renamed --input-format nexus --cores 9 --log-path logs
 
 python /public/uce/phyluce/bin/align/get_align_summary_data.py --alignments incomplete_75perc_renamed --input-format nexus --cores 9 --log-path logs
 ```
-STEP 8A
+#STEP 8A
 ```
 python /public/uce/phyluce/bin/align/format_nexus_files_for_raxml.py --alignments complete_renamed/ --output complete_raxml --log-path logs
 
 python /public/uce/phyluce/bin/align/format_nexus_files_for_raxml.py --alignments incomplete_75perc_renamed/ --output incomplete_75perc_raxml --log-path logs
 ```
-SPECIES TREE STUFF (COMPLETE DATASET ONLY)
+
+#SPECIES TREE STUFF (COMPLETE DATASET ONLY)
 ```
 python /public/uce/phyluce/bin/align/convert_one_align_to_another.py --alignments complete_renamed/ --output complete_phylip --input-format nexus --output-format phylip --shorten-names --name-conf  short.conf --cores 8
 
