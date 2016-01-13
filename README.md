@@ -138,8 +138,8 @@ qlogin in to do this next step:
 python /scratch/oliveros/phyluce/bin/genetrees/phyluce_genetrees_multilocus_bootstrap_count_replicates.py --input complete_phylip/ --bootstrap_replicates complete.bootstrap.replicates --bootstrap_counts complete.bootstrap.counts.csv --bootreps 500
 ```
 Create PBS script to run genetrees for bootstrapped data
-# Edit number of loci in -t parameter (0 - [numloci-1])
-# Edit outgroup in python command
+-- Edit number of loci in -t parameter (0 - [numloci-1])
+-- Edit outgroup in python command
 ```
 
 #PBS -N complete.boot
