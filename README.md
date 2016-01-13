@@ -5,7 +5,8 @@ The first steps involve cleaning the reads and extracting the UCEs from the over
 
 After this, the first thing I do is rename all the files to lower case for the sample names, as this causes issues when converting files to phylip. I conduct the intialsteps on our local linux computers (e.g. the complabs). Things that need to be in paths: Phyluce needs to be in python path, raxml needs to be in path.
 
-#STEP 3A - get the probes for matching the contigs to
+#STEP 3A
+get the probes for matching the contigs to
 ```
 wget https://raw.githubusercontent.com/faircloth-lab/uce-probe-sets/master/uce-5k-probe-set/uce-5k-probes.fasta
 ```
@@ -13,11 +14,13 @@ Making a log directory
 ```
 mkdir logs
 ```
-#STEP 3B - matching the trinity contigs to the probes
+#STEP 3B
+matching the trinity contigs to the probes
 ```
 python /public/uce/phyluce/bin/assembly/match_contigs_to_probes.py --contigs /home/a499a400/gekko/trinity-assemblies/contigs/ --probes uce-5k-probes.fasta --output lastz --log-path logs
 ```
-#STEP 4A - used Scott and Carl's previous dataset.conf file. Dataset name is 'All'. 
+#STEP 4A
+used Scott and Carl's previous dataset.conf file. Dataset name is 'All'. 
 ```
 python /public/uce/phyluce/bin/assembly/get_match_counts.py --locus-db /home/a499a400/gekko/lastz/probe.matches.sqlite --taxon-list-config dataset.conf --taxon-group 'gekko' --output /home/a499a400/gekko/complete.conf --log-path logs
 
@@ -73,7 +76,8 @@ python /public/uce/phyluce/bin/align/format_nexus_files_for_raxml.py --alignment
 python /public/uce/phyluce/bin/align/format_nexus_files_for_raxml.py --alignments incomplete_75perc_renamed/ --output incomplete_75perc_raxml --log-path logs
 ```
 
-#SPECIES TREE STUFF (COMPLETE DATASET ONLY)
+#SPECIES TREE STUFF
+(COMPLETE DATASET ONLY)
 ```
 python /public/uce/phyluce/bin/align/convert_one_align_to_another.py --alignments complete_renamed/ --output complete_phylip --input-format nexus --output-format phylip --shorten-names --name-conf  short.conf --cores 8
 
@@ -220,12 +224,12 @@ Removing files we don't need
 ```
 rm -rf complete_phylip; rm -f complete.boot*.log
 ```
-#Changing directory to complete_boottree to create our STEAC and STAR bootstrap R scripts
+#Changing directory to boots to create our STEAC and STAR bootstrap R scripts
 ```
 R
 numboot <- 500
 outgroup <- "pa_rmb7588"
-wd <- "/scratch/a499a400/gekko/complete_boottree"
+wd <- "/scratch/a499a400/gekko/four_pis_genetrees/boots"
 
 numbers<-seq(from=0,to=numboot-1)  
 phybase<-'library("phybase")'
@@ -273,7 +277,7 @@ for(i in numbers)
 
 nboot<-numboot-1 
 ntaxa<-33  # number of taxa
-ngenes<- 1994  # number of genes
+ngenes<- 1254  # number of genes
 
 #species-allele table below
 c<-"ki_9053101 1 ki_9053101
@@ -318,12 +322,13 @@ for(i in 0:nboot)
     a<-paste(treefile,"0",b,paste(ngenes, ntaxa),c ,"0",sep="\n")  # contents of control file including num genetrees and num species
     write.table(a, file,row.names=F,col.names=F,quote=F)
 }
+```
 
-#After creating all of the *.R files and control files, execute them as job arrays through PBS script
+After creating all of the *.R files and control files, execute them as job arrays through PBS script as below
 
 # JOB ARRAY STAR, STEAC
-
-#PBS -N complete.ss
+```
+#PBS -N fours.ss
 #PBS -l nodes=1:ppn=1:avx,mem=5000m,walltime=2:00:00
 #PBS -M a499a400@ku.edu
 #PBS -t 0-499
@@ -331,14 +336,14 @@ for(i in 0:nboot)
 #PBS -m n
 #PBS -j oe
 #PBS -o /dev/null
-#PBS -d /scratch/a499a400/gekko/complete_boottree
+#PBS -d /scratch/a499a400/gekko/four_pis_genetrees/boots
 
 R --vanilla < starsteac${PBS_ARRAYID}.R > ${PBS_O_WORKDIR}/$PBS_JOBNAME.log
-
+```
 
 # JOB ARRAY MPEST
-
-#PBS -N complete.mp
+```
+#PBS -N fours.mp
 #PBS -l nodes=1:ppn=1:avx,mem=5000m,walltime=4:00:00
 #PBS -M a499a400@ku.edu
 #PBS -t 0-499
@@ -346,13 +351,14 @@ R --vanilla < starsteac${PBS_ARRAYID}.R > ${PBS_O_WORKDIR}/$PBS_JOBNAME.log
 #PBS -m n
 #PBS -j oe
 #PBS -o /dev/null
-#PBS -d /scratch/a499a400/gekko/complete_boottree
+#PBS -d /scratch/a499a400/gekko/four_pis_genetrees/boots
 
 mpest control${PBS_ARRAYID} > ${PBS_O_WORKDIR}/$PBS_JOBNAME.log
+````
 
 # JOB ARRAY ASTRAL
-
-#PBS -N complete.ast
+```
+#PBS -N fours.ast
 #PBS -l nodes=1:ppn=1:avx,mem=25000m,walltime=4:00:00
 #PBS -M a499a400@ku.edu
 #PBS -t 0-499
@@ -360,11 +366,13 @@ mpest control${PBS_ARRAYID} > ${PBS_O_WORKDIR}/$PBS_JOBNAME.log
 #PBS -m n
 #PBS -j oe
 #PBS -o /dev/null
-#PBS -d /scratch/a499a400/gekko/complete_boottree
+#PBS -d /scratch/a499a400/gekko/four_pis_genetrees/boots
 
 unbuffer java -jar /scratch/a499a400/bin/ASTRAL/Astral/astral.4.7.7.jar -i boot${PBS_ARRAYID} -o boot${PBS_ARRAYID}.astral.tre > ${PBS_O_WORKDIR}/$PBS_JOBNAME.log
+```
 
-# After doing this, copies one of the MPEST control files and modified it so the input tree was genetrees.rooted and then copied it to the complete_genetrees folder. Ran MPEST on the original data by:
+After doing this, copied one of the MPEST control files and modified it so the input tree was genetrees.rooted and then copied it to the complete_genetrees folder. Ran MPEST on the original data by:
+```
 mpest control
-
+```
 
