@@ -224,7 +224,7 @@ Removing files we don't need
 ```
 rm -rf complete_phylip; rm -f complete.boot*.log
 ```
-#Changing directory to boots to create our STEAC and STAR bootstrap R scripts
+Changing directory to boots to create our STEAC and STAR bootstrap R scripts
 ```
 R
 numboot <- 500
