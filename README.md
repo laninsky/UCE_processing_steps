@@ -376,3 +376,17 @@ After doing this, copied one of the MPEST control files and modified it so the i
 mpest control
 ```
 
+#Summarizing bootstrapped trees
+Navigate to where the bootstrapped trees are. If you get any error messages, make sure you have DendroPy-4.0.3 installed. Make sure to change the number for the head command to whatever the number of lines you need is
+
+```
+/scratch/a499a400/bin/bin/sumtrees.py -o fours.astral.con.tre boot*.astral.tre
+/scratch/a499a400/bin/bin/sumtrees.py -o fours.star.con.tre boot*.star.tre
+/scratch/a499a400/bin/bin/sumtrees.py -o fours.steac.con.tre boot*.steac.tre
+cat boot*.tre | grep "tree mpest" > summary
+head -n 37 boot0.tre > mpest.500.tre
+cat summary >> mpest.500.tre
+echo "End;" >> mpest.500.tre
+/scratch/a499a400/bin/bin/sumtrees.py -o fours.mpest.con.tre mpest.500.tre
+```
+
