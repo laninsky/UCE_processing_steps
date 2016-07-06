@@ -1,7 +1,7 @@
 # UCE_processing_steps
 The general workflow for processing UCE data that I use. One big acknowledgment: almost all the code I use comes from Carl Oliveros (https://github.com/carloliveros/uce-scripts). The code also makes extensive use of phyluce (https://github.com/faircloth-lab/phyluce) and cloudforest (https://github.com/ngcrawford/CloudForest), written by Brant Faircloth and Nick Crawford respectively. Any steps referred to are the steps from Carl's pipeline described at his github (https://github.com/carloliveros/uce-scripts/blob/master/UCE%20pipeline.md)
 
-The first steps involve cleaning the reads and extracting the UCEs from the overall assembled contigs.
+The first steps involve cleaning the reads and extracting the UCEs from the overall assembled contigs. One issue I have noticed with Illumiprocessor is that it expects samples to be named like the following {name}_L001_R1_001.fastq.gz and {name}_L001_R2_001.fastq.gz. Use the sed function to rename the files if need be. You should be able to make "dummy" adaptor sequences in the tag map section of the Illumiprocessor conf file if your sequences were externally rather than internally barcoded.
 
 After this, the first thing I do is rename all the files to lower case for the sample names, as this causes issues when converting files to phylip. I conduct the intialsteps on our local linux computers (e.g. the complabs). Things that need to be in paths: Phyluce needs to be in python path, raxml needs to be in path.
 
