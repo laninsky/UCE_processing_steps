@@ -72,7 +72,7 @@ temp2 <- temp2[-blankreverse]
 
 newFname <- gsub("R1","R1_repeatremoved",forwards[i])
 newFname <- gsub(".gz","",newFname)
-newRname <- gsub("R2","R2_repeatremoved",reverse[i])
+newRname <- gsub("R2","R2_repeatremoved",reverses[i])
 newRname <- gsub(".gz","",newRname)
 
 write.table(temp1,newFname,quote=FALSE,col.names=FALSE,row.names=FALSE)
