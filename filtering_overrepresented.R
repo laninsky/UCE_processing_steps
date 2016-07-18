@@ -1,3 +1,9 @@
+#To run this script modify the path to "overrepresented" to your fasta file containing the overrepresented sequences across your samples
+#The script should be placed in a folder with your F and R reads and executed by `Rscript filtering_overrepresentatives.R`
+#In order for the script to work, you should have a R1 and R2 file for each individual (e.g. sample1_R1.fastq.gz and sample1_R2.fastq.gz)
+#The script will ditch reads which have the overrepresented sequences present and their corresponding R1/R2 read
+#It will also ditch blank sequences and write the singleton out into a file prefixed with singleton
+
 library(stringi)
 forwards <- list.files()[grep("R1",list.files())]
 reverses <- list.files()[grep("R2",list.files())]
