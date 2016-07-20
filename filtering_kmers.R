@@ -13,6 +13,10 @@ overrepresented <- as.matrix(read.table("overrepresented_kmers.fas"))
 outputrecord <- matrix(NA, ncol=((dim(overrepresented)[1])/2)+3,nrow=length(forwards)+1)
 outputrecord[1,] <- c("R1_name","R2_name","total_no_input_seq",overrepresented[seq(1,(dim(overrepresented)[1]),2),1])
 
+for (j in seq(2,(dim(overrepresented)[1]),2)) {
+overrepresented[j,1] <- paste("^",gsub("N","?",overrepresented[j,1],fixed=TRUE),sep="")
+}
+
 for (i in 1:length(forwards)) {
 temp1 <- readLines(forwards[i])
 temp2 <- readLines(reverses[i])
@@ -22,7 +26,6 @@ outputrecord[(i+1),2] <- reverses[i]
 outputrecord[(i+1),3] <- length(fastalines)
 
 for (j in seq(2,(dim(overrepresented)[1]),2)) {
-overrepresented[j,1] <- paste("^",gsub("N","?",overrepresented[j,1],fixed=TRUE),sep="")
 tempcount <- which(((grepl(overrepresented[j,1],temp1[fastalines])) | (grepl(overrepresented[j,1],temp2[fastalines])))==TRUE)
 outputrecord[(i+1),((j/2)+3)] <- length(tempcount)
 
