@@ -14,7 +14,7 @@ outputrecord <- matrix(NA, ncol=((dim(overrepresented)[1])/2)+3,nrow=length(forw
 outputrecord[1,] <- c("R1_name","R2_name","total_no_input_seq",overrepresented[seq(1,(dim(overrepresented)[1]),2),1])
 
 for (j in seq(2,(dim(overrepresented)[1]),2)) {
-overrepresented[j,1] <- paste("^",gsub("N","?",overrepresented[j,1],fixed=TRUE),sep="")
+overrepresented[j,1] <- paste("^",gsub("N","[[:alpha:]]",overrepresented[j,1],fixed=TRUE),sep="")
 }
 
 for (i in 1:length(forwards)) {
