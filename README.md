@@ -140,6 +140,8 @@ python /scratch/oliveros/phyluce/bin/genetrees/phyluce_genetrees_multilocus_boot
 Create PBS script to run genetrees for bootstrapped data
 -- Edit number of loci in -t parameter (0 - [numloci-1])
 -- Edit outgroup in python command
+
+Make sure to create the output directory before trying to run the script. Check for the log files that will appear to see if anything is going wrong. You do not have to specify an output group with the --outgroup option if your downstream summary species methods don't need a fixed outgroup (and if you have an incomplete matrix you won't be able to use this option anyway).
 ```
 
 #PBS -N complete.boot
