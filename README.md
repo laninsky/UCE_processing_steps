@@ -218,7 +218,7 @@ For astral and mpest, these trees have to be run directly on the command line
 ```
 java -jar /scratch/a499a400/bin/ASTRAL/Astral/astral.4.7.7.jar -i genetrees.rooted -o genetrees.astral.tre 2>&1 | tee genetrees.phy.astral.out
 ```
-I find it easier to wait to construct the mpest tree until created the bootstrapped mpest control files (can just copy these over). So, now, going back to the bootstrapped data:
+I find it easier to wait to construct the mpest tree until created the bootstrapped mpest control files (can just copy these over). So, now, going back to the bootstrapped data (make the complete_boottree directory before executing the command):
 ```
 python /scratch/oliveros/phyluce/bin/genetrees/phyluce_genetrees_sort_multilocus_bootstraps.py --input complete_bootstraps/ --bootstrap_replicates complete.bootstrap.replicates --output complete_boottree
 ```
