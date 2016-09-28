@@ -80,6 +80,10 @@ python /public/uce/phyluce/bin/align/format_nexus_files_for_raxml.py --alignment
 
 python /public/uce/phyluce/bin/align/format_nexus_files_for_raxml.py --alignments incomplete_75perc_renamed/ --output incomplete_75perc_raxml --log-path logs
 ```
+#CONCATENATED RAXML ANALYSIS
+```
+raxmlHPC-AVX -s outgroup_final_bylocus_nexus.phylip -n run1 -m GTRCATI -f a -N 100 -x $RANDOM -p $RANDOM
+```
 
 #SPECIES TREE STUFF
 (COMPLETE DATASET ONLY)
@@ -128,6 +132,8 @@ rm complete_genetrees/*/RAxML_log*
 rm complete_genetrees/*/RAxML_parsimony*
 rm complete_genetrees/*/RAxML_result*
 ```
+If you have problems with the Phyluce script for making genetrees by locus, you can use the more manual shell script given here:
+https://github.com/laninsky/Phase_hybrid_from_next_gen/tree/master/post-processing
 
 For these next steps, I uploaded files to the KU cluster and ran summary species tree analyses up there. First, created 'gekko' folder on cluster, then ran following commands from complab2
 ```
