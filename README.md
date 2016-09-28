@@ -181,48 +181,13 @@ Traceback (most recent call last):
 AttributeError: 'NoneType' object has no attribute 'groups'
 ```
 
-While the bootstrapping genetrees script was running, I went ahead and ran the scripts on original data.
+While the bootstrapping genetrees script was running, I went ahead and ran the scripts on original data. First you need to pull out the trees into a single file (back on complab2):
 ```
-cd complete_genetrees
-cp all-best-trees.tre genetrees.rooted
-
-R
-library("phybase")
-source("/scratch/oliveros/NJst.R") 
-outgrouptaxon <- "pa_rmb7588"
-
-mytrees<-read.tree("genetrees.rooted")
-taxaname<-mytrees[[1]]$tip.label
-speciesname<-taxaname
-ntaxa<-length(taxaname)
-ngene<-length(mytrees)
-print(paste("Outgroup taxon", outgrouptaxon))
-
-treestringrooted<-read.tree.string("genetrees.rooted",format="phylip")
-treesrooted<-treestringrooted$tree
-
-# STAR
-species.structure<-matrix(0,ncol=ntaxa,nrow=ntaxa)
-diag(species.structure)<-1
-print("Estimating STAR tree")
-star<-star.sptree(treesrooted, speciesname, taxaname, species.structure, outgroup=outgrouptaxon,method="nj")
-write.table(star,"genetrees.star.tre",row.names=F,col.names=F,quote=F,append=TRUE)
-
-# STEAC
-species.structure<-matrix(0,ncol=ntaxa,nrow=ntaxa)
-diag(species.structure)<-1
-print("Estimating STEAC tree")
-steac<-steac.sptree(treesrooted, speciesname, taxaname, species.structure, outgroup=outgrouptaxon,method="nj")
-write.table(steac,"genetrees.steac.tre",row.names=F,col.names=F,quote=F,append=TRUE)
-
-# NJst
-treestringphy<-read.tree.string("genetrees.rooted",format="phylip")
-treesphy<-treestringphy$tree
-species.structure<-matrix(0,ncol=ntaxa,nrow=ntaxa)
-diag(species.structure)<-1
-print("Estimating NJst tree")
-njsttree<-NJst(treesphy, speciesname, taxaname, species.structure)
-write.table(njsttree,"genetrees.njst.tre",row.names=F,col.names=F,quote=F,append=TRUE)
+cd outgroup_genetrees;
+touch inputgenetrees.tre;
+for i in uce*; 
+do cat $i/RAxML_bestTree.best >> inputgenetrees.tre
+done;
 ```
 
 For astral and mpest, these trees have to be run directly on the command line
@@ -403,3 +368,47 @@ echo "End;" >> mpest.500.tre
 /scratch/a499a400/bin/bin/sumtrees.py -o fours.mpest.con.tre mpest.500.tre
 ```
 
+Old species tree methods for posterity: running on original data
+
+```
+cd complete_genetrees
+cp all-best-trees.tre genetrees.rooted
+
+R
+library("phybase")
+source("/scratch/oliveros/NJst.R") 
+outgrouptaxon <- "pa_rmb7588"
+
+mytrees<-read.tree("genetrees.rooted")
+taxaname<-mytrees[[1]]$tip.label
+speciesname<-taxaname
+ntaxa<-length(taxaname)
+ngene<-length(mytrees)
+print(paste("Outgroup taxon", outgrouptaxon))
+
+treestringrooted<-read.tree.string("genetrees.rooted",format="phylip")
+treesrooted<-treestringrooted$tree
+
+# STAR
+species.structure<-matrix(0,ncol=ntaxa,nrow=ntaxa)
+diag(species.structure)<-1
+print("Estimating STAR tree")
+star<-star.sptree(treesrooted, speciesname, taxaname, species.structure, outgroup=outgrouptaxon,method="nj")
+write.table(star,"genetrees.star.tre",row.names=F,col.names=F,quote=F,append=TRUE)
+
+# STEAC
+species.structure<-matrix(0,ncol=ntaxa,nrow=ntaxa)
+diag(species.structure)<-1
+print("Estimating STEAC tree")
+steac<-steac.sptree(treesrooted, speciesname, taxaname, species.structure, outgroup=outgrouptaxon,method="nj")
+write.table(steac,"genetrees.steac.tre",row.names=F,col.names=F,quote=F,append=TRUE)
+
+# NJst
+treestringphy<-read.tree.string("genetrees.rooted",format="phylip")
+treesphy<-treestringphy$tree
+species.structure<-matrix(0,ncol=ntaxa,nrow=ntaxa)
+diag(species.structure)<-1
+print("Estimating NJst tree")
+njsttree<-NJst(treesphy, speciesname, taxaname, species.structure)
+write.table(njsttree,"genetrees.njst.tre",row.names=F,col.names=F,quote=F,append=TRUE)
+```
