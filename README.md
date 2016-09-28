@@ -190,11 +190,16 @@ do cat $i/RAxML_bestTree.best >> inputgenetrees.tre
 done;
 ```
 
-For astral and mpest, these trees have to be run directly on the command line
+Then to run ASTRID:
 ```
-java -jar /scratch/a499a400/bin/ASTRAL/Astral/astral.4.7.7.jar -i genetrees.rooted -o genetrees.astral.tre 2>&1 | tee genetrees.phy.astral.out
+ /public/ASTRID-linux -i inputgenetrees.tre -o astrid.tre -m bionj
+ ```
+To run ASTRAL-II:
 ```
-I find it easier to wait to construct the mpest tree until created the bootstrapped mpest control files (can just copy these over). So, now, going back to the bootstrapped data (make the complete_boottree directory before executing the command):
+java -jar ~/bin/ASTRAL/astral.4.10.5.jar -i input genetrees.tre -o astral.tre
+```
+
+Now, going back to the bootstrapped data (make the complete_boottree directory before executing the command):
 ```
 python /scratch/oliveros/phyluce/bin/genetrees/phyluce_genetrees_sort_multilocus_bootstraps.py --input complete_bootstraps/ --bootstrap_replicates complete.bootstrap.replicates --output complete_boottree
 ```
@@ -202,6 +207,72 @@ Removing files we don't need
 ```
 rm -rf complete_phylip; rm -f complete.boot*.log
 ```
+
+Pull down bootstrapped data and run 
+
+#Summarizing bootstrapped trees
+Navigate to where the bootstrapped trees are. If you get any error messages, make sure you have DendroPy-4.0.3 installed. Make sure to change the number for the head command to whatever the number of lines you need is
+
+```
+/scratch/a499a400/bin/bin/sumtrees.py -o fours.astral.con.tre boot*.astral.tre
+/scratch/a499a400/bin/bin/sumtrees.py -o fours.star.con.tre boot*.star.tre
+/scratch/a499a400/bin/bin/sumtrees.py -o fours.steac.con.tre boot*.steac.tre
+cat boot*.tre | grep "tree mpest" > summary
+head -n 37 boot0.tre > mpest.500.tre
+cat summary >> mpest.500.tre
+echo "End;" >> mpest.500.tre
+/scratch/a499a400/bin/bin/sumtrees.py -o fours.mpest.con.tre mpest.500.tre
+```
+
+Old species tree methods for posterity: running on original data
+
+```
+cd complete_genetrees
+cp all-best-trees.tre genetrees.rooted
+
+R
+library("phybase")
+source("/scratch/oliveros/NJst.R") 
+outgrouptaxon <- "pa_rmb7588"
+
+mytrees<-read.tree("genetrees.rooted")
+taxaname<-mytrees[[1]]$tip.label
+speciesname<-taxaname
+ntaxa<-length(taxaname)
+ngene<-length(mytrees)
+print(paste("Outgroup taxon", outgrouptaxon))
+
+treestringrooted<-read.tree.string("genetrees.rooted",format="phylip")
+treesrooted<-treestringrooted$tree
+
+# STAR
+species.structure<-matrix(0,ncol=ntaxa,nrow=ntaxa)
+diag(species.structure)<-1
+print("Estimating STAR tree")
+star<-star.sptree(treesrooted, speciesname, taxaname, species.structure, outgroup=outgrouptaxon,method="nj")
+write.table(star,"genetrees.star.tre",row.names=F,col.names=F,quote=F,append=TRUE)
+
+# STEAC
+species.structure<-matrix(0,ncol=ntaxa,nrow=ntaxa)
+diag(species.structure)<-1
+print("Estimating STEAC tree")
+steac<-steac.sptree(treesrooted, speciesname, taxaname, species.structure, outgroup=outgrouptaxon,method="nj")
+write.table(steac,"genetrees.steac.tre",row.names=F,col.names=F,quote=F,append=TRUE)
+
+# NJst
+treestringphy<-read.tree.string("genetrees.rooted",format="phylip")
+treesphy<-treestringphy$tree
+species.structure<-matrix(0,ncol=ntaxa,nrow=ntaxa)
+diag(species.structure)<-1
+print("Estimating NJst tree")
+njsttree<-NJst(treesphy, speciesname, taxaname, species.structure)
+write.table(njsttree,"genetrees.njst.tre",row.names=F,col.names=F,quote=F,append=TRUE)
+```
+For astral and mpest, these trees have to be run directly on the command line
+```
+java -jar /scratch/a499a400/bin/ASTRAL/Astral/astral.4.7.7.jar -i genetrees.rooted -o genetrees.astral.tre 2>&1 | tee genetrees.phy.astral.out
+```
+I find it easier to wait to construct the mpest tree until created the bootstrapped mpest control files (can just copy these over). So, after doing the steps on the boostrapped data summarized:
 Changing directory to boots to create our STEAC and STAR bootstrap R scripts
 ```
 R
@@ -352,63 +423,4 @@ unbuffer java -jar /scratch/a499a400/bin/ASTRAL/Astral/astral.4.7.7.jar -i boot$
 After doing this, copied one of the MPEST control files and modified it so the input tree was genetrees.rooted and then copied it to the complete_genetrees folder. Ran MPEST on the original data by:
 ```
 mpest control
-```
-
-#Summarizing bootstrapped trees
-Navigate to where the bootstrapped trees are. If you get any error messages, make sure you have DendroPy-4.0.3 installed. Make sure to change the number for the head command to whatever the number of lines you need is
-
-```
-/scratch/a499a400/bin/bin/sumtrees.py -o fours.astral.con.tre boot*.astral.tre
-/scratch/a499a400/bin/bin/sumtrees.py -o fours.star.con.tre boot*.star.tre
-/scratch/a499a400/bin/bin/sumtrees.py -o fours.steac.con.tre boot*.steac.tre
-cat boot*.tre | grep "tree mpest" > summary
-head -n 37 boot0.tre > mpest.500.tre
-cat summary >> mpest.500.tre
-echo "End;" >> mpest.500.tre
-/scratch/a499a400/bin/bin/sumtrees.py -o fours.mpest.con.tre mpest.500.tre
-```
-
-Old species tree methods for posterity: running on original data
-
-```
-cd complete_genetrees
-cp all-best-trees.tre genetrees.rooted
-
-R
-library("phybase")
-source("/scratch/oliveros/NJst.R") 
-outgrouptaxon <- "pa_rmb7588"
-
-mytrees<-read.tree("genetrees.rooted")
-taxaname<-mytrees[[1]]$tip.label
-speciesname<-taxaname
-ntaxa<-length(taxaname)
-ngene<-length(mytrees)
-print(paste("Outgroup taxon", outgrouptaxon))
-
-treestringrooted<-read.tree.string("genetrees.rooted",format="phylip")
-treesrooted<-treestringrooted$tree
-
-# STAR
-species.structure<-matrix(0,ncol=ntaxa,nrow=ntaxa)
-diag(species.structure)<-1
-print("Estimating STAR tree")
-star<-star.sptree(treesrooted, speciesname, taxaname, species.structure, outgroup=outgrouptaxon,method="nj")
-write.table(star,"genetrees.star.tre",row.names=F,col.names=F,quote=F,append=TRUE)
-
-# STEAC
-species.structure<-matrix(0,ncol=ntaxa,nrow=ntaxa)
-diag(species.structure)<-1
-print("Estimating STEAC tree")
-steac<-steac.sptree(treesrooted, speciesname, taxaname, species.structure, outgroup=outgrouptaxon,method="nj")
-write.table(steac,"genetrees.steac.tre",row.names=F,col.names=F,quote=F,append=TRUE)
-
-# NJst
-treestringphy<-read.tree.string("genetrees.rooted",format="phylip")
-treesphy<-treestringphy$tree
-species.structure<-matrix(0,ncol=ntaxa,nrow=ntaxa)
-diag(species.structure)<-1
-print("Estimating NJst tree")
-njsttree<-NJst(treesphy, speciesname, taxaname, species.structure)
-write.table(njsttree,"genetrees.njst.tre",row.names=F,col.names=F,quote=F,append=TRUE)
 ```
