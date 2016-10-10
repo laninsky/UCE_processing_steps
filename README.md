@@ -10,7 +10,7 @@ If there are issues with low percentages of trinity contigs mapping to UCEs, it 
 
 In addition, if you have a lot of overlap between your F and R reads, it is a good idea to merge thenm using PEAR:
 ```
-
+for i in *R1_001.fastq.gz; do /public/pear-0.9.10-bin-64/pear-0.9.10-bin-64 -f $i -r ${i/_R1_001/_R2_001} -o ${i/_adapttrimmed_R1_001.fastq.gz/} -n 33 >> pear.log 2>&1; done
 ```
 
 After this, the first thing I do is rename all the files to lower case for the sample names, as this causes issues when converting files to phylip. I conduct the intialsteps on our local linux computers (e.g. the complabs). Things that need to be in paths: Phyluce needs to be in python path, raxml needs to be in path.
