@@ -3,10 +3,15 @@ The general workflow for processing UCE data that I use. One big acknowledgment:
 
 The first steps involve cleaning the reads and extracting the UCEs from the overall assembled contigs. One issue I have noticed with Illumiprocessor is that it expects samples to be named like the following {name}_L001_R1_001.fastq.gz and {name}_L001_R2_001.fastq.gz. Use the sed function to rename the files if need be. Check your cleaned reads through FastQC following the illumiprocessor step, because in same cases cutadapt may be needed to remove the adaptor sequence if trimmomatic doesn't get it all.
 ```
-for i in *R1_001.fastq.gz; do basename=`echo $i | sed 's/R1_001.fastq.gz//g'`; cutadapt -a AGATCGGAAGAGC -A AGATCGGAAGAGC -o ${basename}adapttrimmed_R1_001.fastq.gz -p ${basename}adapttrimmed_R2_001.fastq.gz $i ${basename}R2_001.fastq.gz -q 5,15 -m 25; done
+for i in *R1_001.fastq.gz; do basename=`echo $i | sed 's/R1_001.fastq.gz//g'`; cutadapt -a AGATCGGAAGAGC -A AGATCGGAAGAGC -o ${basename}adapttrimmed_R1_001.fastq.gz -p ${basename}adapttrimmed_R2_001.fastq.gz $i ${basename}R2_001.fastq.gz -q 5,15 -m 25 >> cutadapt.log; done
 ```
 
-If there are issues with low percentages of trinity contigs mapping to UCEs, it may also be a good idea to remove over-represented sequences as identified through FastQC (filtering_overrepresented.R). If the FastQC comes back after this with identifiable spikes in kmers at the 5' end of each read, running filtering_kmers.R might be a good idea too. I do this before quality filtering so that these over-represented sequences are not shifted relative to the start of the read.
+If there are issues with low percentages of trinity contigs mapping to UCEs, it may also be a good idea to remove over-represented sequences as identified through FastQC (filtering_overrepresented.R). If the FastQC comes back after this with identifiable spikes in kmers at the 5' end of each read, running filtering_kmers.R might be a good idea too. It might also be a good idea to do this before quality filtering so that these over-represented sequences are not shifted relative to the start of the read.
+
+In addition, if you have a lot of overlap between your F and R reads, it is a good idea to merge thenm using PEAR:
+```
+
+```
 
 After this, the first thing I do is rename all the files to lower case for the sample names, as this causes issues when converting files to phylip. I conduct the intialsteps on our local linux computers (e.g. the complabs). Things that need to be in paths: Phyluce needs to be in python path, raxml needs to be in path.
 
