@@ -20,9 +20,9 @@ for i in *; do gzip $i/*; done
 
 After this, the first thing I do is rename all the files to lower case for the sample names, as this causes issues when converting files to phylip. I conduct the intialsteps on our local linux computers (e.g. the complabs). Things that need to be in paths: Phyluce needs to be in python path, raxml needs to be in path.
 
-Running trinity assemblies using Phyluce 1.5
+Running trinity assemblies using Trinity 2.2.0 (from inside pearmerged folder)
 ```
-phyluce_assembly_assemblo_trinity --config trinity.conf --output trinity_assemblies/ --cores 4 --log-path logs
+for i in *; do /public/trinityrnaseq-2.2.0/Trinity -seqType fq --max_memory 50G --left $i/$i-READ1.fastq.gz $i/$i-READ-singleton.fastq.gz --right $i/$i-READ2.fastq.gz --CPU 4 --full_cleanup --output $i/trinity_out >> trinity.log; done
 ```
 
 #STEP 3A
