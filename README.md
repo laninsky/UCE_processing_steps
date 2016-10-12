@@ -13,7 +13,7 @@ In addition, if you have a lot of overlap between your F and R reads, it is a go
 for i in *R1_001.fastq.gz; do /public/pear-0.9.10-bin-64/pear-0.9.10-bin-64 -f $i -r ${i/_R1_001/_R2_001} -o ${i/_adapttrimmed_R1_001.fastq.gz/} -n 33 >> pear.log 2>&1; done
 
 #Moving the PEAR assemblies (after deleting the discarded files) into separate folders
-for i in *.assembled.fastq; do basename=`echo $i | sed 's/.assembled.fastq//g'`; mkdir $basename; mv $i $basename/${basename}-SINGLETON.fastq; mv $basename.unassembled.forward.fastq $basename/${basename}-READ1.fastq; mv $basename.unassembled.reverse.fastq $basename/${basename}-READ2.fastq; done
+for i in *.assembled.fastq; do basename=`echo $i | sed 's/.assembled.fastq//g'`; mkdir $basename; mv $i $basename/${basename}-READ-singleton.fastq; mv $basename.unassembled.forward.fastq $basename/${basename}-READ1.fastq; mv $basename.unassembled.reverse.fastq $basename/${basename}-READ2.fastq; done
 
 for i in *; do gzip $i/*; done
 ```
