@@ -20,6 +20,11 @@ for i in *; do gzip $i/*; done
 
 After this, the first thing I do is rename all the files to lower case for the sample names, as this causes issues when converting files to phylip. I conduct the intialsteps on our local linux computers (e.g. the complabs). Things that need to be in paths: Phyluce needs to be in python path, raxml needs to be in path.
 
+Running trinity assemblies using Phyluce 1.5
+```
+phyluce_assembly_assemblo_trinity --config trinity.conf --output trinity_assemblies/ --cores 4 --log-path logs
+```
+
 #STEP 3A
 get the probes for matching the contigs to
 ```
