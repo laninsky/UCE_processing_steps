@@ -22,7 +22,7 @@ After this, the first thing I do is rename all the files to lower case for the s
 
 Running trinity assemblies using Trinity 2.2.0 (from inside pearmerged folder)
 ```
-for i in *; do /public/trinityrnaseq-2.2.0/Trinity -seqType fq --max_memory 50G --left $i/$i-READ1.fastq.gz $i/$i-READ-singleton.fastq.gz --right $i/$i-READ2.fastq.gz --CPU 4 --full_cleanup --output $i/trinity_out >> trinity.log; done
+for i in *; do /public/trinityrnaseq-2.2.0/Trinity -seqType fq --max_memory 50G --left /home/a499a400/beetles/pearmerged/$i/$i-READ1.fastq.gz,/home/a499a400/beetles/pearmerged/$i/$i-READ-singleton.fastq.gz --right /home/a499a400/beetles/pearmerged/$i/$i-READ2.fastq.gz --CPU 4 --full_cleanup --output /home/a499a400/beetles/pearmerged/$i/trinity_out >> trinity.log; done
 ```
 
 #STEP 3A
