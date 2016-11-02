@@ -84,11 +84,11 @@ phyluce_align_remove_locus_name_from_nexus_lines --alignments incomplete_mafft_n
 
 #Getting 50% complete data matrix
 ```
-phyluce_align_get_only_loci_with_min_taxa --alignments incomplete_mafft_nexus_no_locus_names --taxa 64 --percent 0.5 --output 50perc_nexus --cores 12
+phyluce_align_get_only_loci_with_min_taxa --alignments incomplete_mafft_nexus_no_locus_names --taxa 64 --percent 0.5 --output 50perc_nexus --cores 12 --log-path logs
 ```
 #Adding missing data designators and getting designators for final dataset
 ```
-phyluce_align_convert_one_align_to_another --alignments 50perc_nexus --output 50perc_nexus_fasta --input-format nexus --output-format fasta --cores 8 --log-path logs
+phyluce_align_add_missing_data_designators --alignments 50perc_nexus --output 50perc_nexus_w_missing --match-count-output dataset1.conf --incomplete-matrix dataset1.incomplete --log-path logs --cores 10
 
 phyluce_align_get_align_summary_data --alignments incomplete_mafft_fasta --cores 12 --log-path logs
 ```
