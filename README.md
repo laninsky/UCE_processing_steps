@@ -77,10 +77,26 @@ phyluce_align_seqcap_align --fasta incomplete_fasta --output incomplete_mafft_ne
 phyluce_align_get_align_summary_data --alignments incomplete_mafft_nexus --cores 12 --log-path logs
 ```
 
-phyluce_align_remove_locus_name_from_nexus_lines \
-    --alignments /path/to/uce/taxon-set1/mafft-nexus/ \
-    --output /path/to/uce/taxon-set1/mafft-nexus-clean/ \
-    --cores 12
+#Locus name removal
+```
+phyluce_align_remove_locus_name_from_nexus_lines --alignments incomplete_mafft_nexus --output incomplete_mafft_nexus_no_locus_names --cores 12 --log-path logs
+```
+
+#Getting 50% complete data matrix
+```
+phyluce_align_get_only_loci_with_min_taxa --alignments incomplete_mafft_nexus_no_locus_names --taxa 64 --percent 0.5 --output 50perc_nexus --cores 12
+```
+#Adding missing data designators and getting designators for final dataset
+```
+phyluce_align_convert_one_align_to_another --alignments 50perc_nexus --output 50perc_nexus_fasta --input-format nexus --output-format fasta --cores 8 --log-path logs
+
+phyluce_align_get_align_summary_data --alignments incomplete_mafft_fasta --cores 12 --log-path logs
+```
+
+
+
+
+STOP HERE STEPHEN
 
 
 #STEP 4B
