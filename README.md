@@ -26,10 +26,17 @@ Running trinity assemblies using Phyluce 1.5 (http://phyluce.readthedocs.io/en/l
 ```
 phyluce_assembly_assemblo_trinity --config trinity.conf --output trinity-assemblies/ --clean --cores 12 --log-path logs
 ```
+Before matching probes to contigs, I've found I get greater success if I filter the output of trinity to just the longest isoforms (so multiple isoforms of the same gene are not present in the output)
+```
+cd trinity-assemblies/contigs
+mkdir longest_isoform
+cd longest_isoform
+for i in ../*.fasta; do newname=`echo $i | sed 's/..\///g'`; /public/trinityrnaseq-2.2.0/util/misc/get_longest_isoform_seq_per_trinity_gene.pl $i > $newname; done
+```
 
 #Matching probes to contigs
 ```
-phyluce_assembly_match_contigs_to_probes --contigs trinity-assemblies/contigs/ --probes coleoptera-v1-master-probe-list-DUPE-SCREENED.fasta --output match_contig_to_probes --log-path logs
+phyluce_assembly_match_contigs_to_probes --contigs trinity-assemblies/contigs/longest_isoform/ --probes coleoptera-v1-master-probe-list-DUPE-SCREENED.fasta --output match_contig_to_probes_longest_iso --log-path logs
 ```
 #STEP 4A
 used Scott and Carl's previous dataset.conf file. Dataset name is 'All'. 
