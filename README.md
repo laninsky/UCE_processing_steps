@@ -38,12 +38,19 @@ for i in ../*.fasta; do newname=`echo $i | sed 's/..\///g'`; /public/trinityrnas
 ```
 phyluce_assembly_match_contigs_to_probes --contigs trinity-assemblies/contigs/longest_isoform/ --probes coleoptera-v1-master-probe-list-DUPE-SCREENED.fasta --output match_contig_to_probes_longest_iso --log-path logs
 ```
-#STEP 4A
-used Scott and Carl's previous dataset.conf file. Dataset name is 'All'. 
-```
-python /public/uce/phyluce/bin/assembly/get_match_counts.py --locus-db /home/a499a400/gekko/lastz/probe.matches.sqlite --taxon-list-config dataset.conf --taxon-group 'gekko' --output /home/a499a400/gekko/complete.conf --log-path logs
 
-python /public/uce/phyluce/bin/assembly/get_match_counts.py --locus-db /home/a499a400/gekko/lastz/probe.matches.sqlite --taxon-list-config dataset.conf --taxon-group 'gekko' --output /home/a499a400/gekko/incomplete.conf --log-path logs --incomplete-matrix
+#Generate data matrix
+Set up a conf file with the names for all your taxa:
+```
+[dataset1]
+sle0040
+sle0047
+sle0058
+...
+```
+For incomplete matrix:
+```
+phyluce_assembly_get_match_counts --locus-db match_contig_to_probes_longest_iso/probe.matches.sqlite --taxon-list-config datasets.conf --taxon-group 'dataset1' --output dataset1.conf --log-path logs --incomplete-matrix
 ```
 Note, if you get the following error, make sure your dataset.conf filename is correct:
 ```
@@ -54,6 +61,14 @@ Traceback (most recent call last):
     len(organisms),
 TypeError: object of type 'NoneType' has no len()
 ```
+
+#Extracting FASTA data
+```
+phyluce_assembly_get_fastas_from_match_counts --contigs trinity-assemblies/contigs/longest_isoform/ --locus-db match_contig_to_probes_longest_iso/probe.matches.sqlite --match-count-output dataset1.conf --incomplete-matrix dataset1.incomplete --output incomplete_fasta --log-path logs
+```
+
+
+
 #STEP 4B
 ```
 python /public/uce/phyluce/bin/assembly/get_fastas_from_match_counts.py --contigs /home/a499a400/gekko/trinity-assemblies/contigs/ --locus-db /home/a499a400/gekko/lastz/probe.matches.sqlite --match-count-output /home/a499a400/gekko/complete.conf --output complete_fasta --log-path logs
