@@ -67,6 +67,20 @@ TypeError: object of type 'NoneType' has no len()
 phyluce_assembly_get_fastas_from_match_counts --contigs trinity-assemblies/contigs/longest_isoform/ --locus-db match_contig_to_probes_longest_iso/probe.matches.sqlite --match-count-output dataset1.conf --incomplete-matrix dataset1.incomplete --output incomplete_fasta --log-path logs
 ```
 
+#Aligning FASTA data
+```
+phyluce_align_seqcap_align --fasta incomplete_fasta --output incomplete_mafft_nexus --taxa 64 --aligner mafft --cores 12 --incomplete-matrix --log-path logs
+```
+
+#Alignment summary
+```
+phyluce_align_get_align_summary_data --alignments incomplete_mafft_nexus --cores 12 --log-path logs
+```
+
+phyluce_align_remove_locus_name_from_nexus_lines \
+    --alignments /path/to/uce/taxon-set1/mafft-nexus/ \
+    --output /path/to/uce/taxon-set1/mafft-nexus-clean/ \
+    --cores 12
 
 
 #STEP 4B
