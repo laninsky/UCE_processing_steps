@@ -1,6 +1,7 @@
 # UCE_processing_steps
-The general workflow for processing UCE data that I use. One big acknowledgment: almost all the code I use comes from Carl Oliveros (https://github.com/carloliveros/uce-scripts). The code also makes extensive use of phyluce (https://github.com/faircloth-lab/phyluce) and cloudforest (https://github.com/ngcrawford/CloudForest), written by Brant Faircloth and Nick Crawford respectively. Any steps referred to are the steps from Carl's pipeline described at his github (https://github.com/carloliveros/uce-scripts/blob/master/UCE%20pipeline.md)
+The general workflow for processing UCE data that I use. One big acknowledgment: almost all the code I use comes from Carl Oliveros (https://github.com/carloliveros/uce-scripts). The code also makes extensive use of phyluce (https://github.com/faircloth-lab/phyluce) and cloudforest (https://github.com/ngcrawford/CloudForest), written by Brant Faircloth and Nick Crawford respectively.
 
+#Trimming and removing adaptor contamination
 The first steps involve cleaning the reads and extracting the UCEs from the overall assembled contigs. One issue I have noticed with Illumiprocessor is that it expects samples to be named like the following {name}_L001_R1_001.fastq.gz and {name}_L001_R2_001.fastq.gz. Use the sed function to rename the files if need be. Check your cleaned reads through FastQC following the illumiprocessor step, because in same cases cutadapt may be needed to remove the adaptor sequence if trimmomatic doesn't get it all.
 ```
 for i in *R1_001.fastq.gz; do basename=`echo $i | sed 's/R1_001.fastq.gz//g'`; cutadapt -a AGATCGGAAGAGC -A AGATCGGAAGAGC -o ${basename}adapttrimmed_R1_001.fastq.gz -p ${basename}adapttrimmed_R2_001.fastq.gz $i ${basename}R2_001.fastq.gz -q 5,15 -m 25 >> cutadapt.log; done
@@ -18,26 +19,17 @@ for i in *.assembled.fastq; do basename=`echo $i | sed 's/.assembled.fastq//g'`;
 for i in *; do gzip $i/*; done
 ```
 
-After this, the first thing I do is rename all the files to lower case for the sample names, as this causes issues when converting files to phylip. I conduct the intialsteps on our local linux computers (e.g. the complabs). Things that need to be in paths: Phyluce needs to be in python path, raxml needs to be in path.
+After this, the first thing I do is rename all the files to lower case for the sample names, as this causes issues when converting files to phylip. I conduct the intialsteps on our local linux computers (e.g. the complabs). Things that need to be in paths: Phyluce needs to be in python path, raxml needs to be in path. For instructions on how to do this on previous Phyluce versions, please see Carl's github. I've got instructions for using Ph
 
-Running trinity assemblies using Trinity 2.2.0 (from inside pearmerged folder)
+#Assembly
+Running trinity assemblies using Phyluce 1.5 (http://phyluce.readthedocs.io/en/latest/assembly.html)
 ```
-for i in *; do /public/trinityrnaseq-2.2.0/Trinity -seqType fq --max_memory 50G --left /home/a499a400/beetles/pearmerged/$i/$i-READ1.fastq.gz,/home/a499a400/beetles/pearmerged/$i/$i-READ-singleton.fastq.gz --right /home/a499a400/beetles/pearmerged/$i/$i-READ2.fastq.gz --CPU 4 --full_cleanup --output /home/a499a400/beetles/pearmerged/$i/trinity_out >> trinity.log; done
+phyluce_assembly_assemblo_trinity --config trinity.conf --output trinity-assemblies/ --clean --cores 12 --log-path logs
 ```
 
-#STEP 3A
-get the probes for matching the contigs to
+#Matching probes to contigs
 ```
-wget https://raw.githubusercontent.com/faircloth-lab/uce-probe-sets/master/uce-5k-probe-set/uce-5k-probes.fasta
-```
-Making a log directory
-```
-mkdir logs
-```
-#STEP 3B
-matching the trinity contigs to the probes
-```
-python /public/uce/phyluce/bin/assembly/match_contigs_to_probes.py --contigs /home/a499a400/gekko/trinity-assemblies/contigs/ --probes uce-5k-probes.fasta --output lastz --log-path logs
+phyluce_assembly_match_contigs_to_probes --contigs trinity-assemblies/contigs/ --probes coleoptera-v1-master-probe-list-DUPE-SCREENED.fasta --output match_contig_to_probes --log-path logs
 ```
 #STEP 4A
 used Scott and Carl's previous dataset.conf file. Dataset name is 'All'. 
