@@ -77,7 +77,7 @@ phyluce_align_seqcap_align --fasta incomplete_fasta --output incomplete_mafft_ne
 phyluce_align_remove_locus_name_from_nexus_lines --alignments incomplete_mafft_nexus --output incomplete_mafft_fasta_no_locus_names --cores 12 --output-format fasta --log-path logs
 ```
 
-#Gblocks on aligned data (script will not work on nexus file input, even if you specify input-format nexus
+#Gblocks on aligned data (script will not work on nexus file input, even if you specify input-format nexus. You want to run this before adding missing data designators or it will attempt to implement it across the entire dataset, even across taxa the locus is not found in)
 ```
 phyluce_align_get_gblocks_trimmed_alignments_from_untrimmed --alignments incomplete_mafft_fasta_no_locus_names --output incomplete_mafft_gblocks --output-format nexus --b2 0.5 --log-path logs --cores 10
 ```
@@ -89,17 +89,10 @@ phyluce_align_get_only_loci_with_min_taxa --alignments incomplete_mafft_gblocks 
 phyluce_align_get_align_summary_data --alignments 50perc_nexus --cores 12 --log-path logs
 ```
 
-
-
 #Adding missing data designators 
 ```
-phyluce_align_add_missing_data_designators --alignments incomplete_mafft_gblocks --output incomplete_mafft_gblocks_w_missing --match-count-output dataset1.conf --incomplete-matrix dataset1.incomplete --log-path logs --cores 10
+phyluce_align_add_missing_data_designators --alignments incomplete_mafft_gblocks --output incomplete_mafft_gblocks_w_missing --match-count-output dataset1.conf --incomplete-matrix dataset1.incomplete --log-path logs --cores 10 --min-taxa 32 --verbatim --no-check-missing
 ```
-phyluce_align_add_missing_data_designators --alignments 50perc_nexus --output 50perc_nexus_w_missing --match-count-output dataset1.conf --incomplete-matrix dataset1.incomplete --log-path logs --cores 10
-
-
-```
-
 
 
 STOP HERE STEPHEN
