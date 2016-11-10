@@ -105,7 +105,13 @@ STOP HERE STEPHEN
 
 
 #Submitting to Genbank
-I've made some code that will take a tab-delimited file (called 'key') with the sample names as you have specified them in your UCE fasta files (1st column), as well as what you would like the genbank specifiers to be (2nd column). If you shove it in a folder full of fasta files labelled for each uce locus, it will use the name of the uce-loci in place of 'ucelocus' in the tab-delimited file to rename and print out the fasta sequences for each individual that has data (assuming missing is coded as "_").
+I've made some code that will take a tab-delimited file (called 'key') with the sample names as you have specified them in your UCE fasta files (1st column), as well as the R paste function for what you would like the genbank specifiers to be (2nd column). If you shove it in a folder full of fasta files labelled for each uce locus, it will use the name of the uce-loci in place of 'ucelocus' in the tab-delimited file to rename and print out the fasta sequences for each individual that has data (assuming missing is coded as "_").
+
+```
+>kaloula_baleata_jam3573	paste(">kaloula_baleata_jam3573","_",ucelocus," [organism=Kaloula baleata] [molecule=DNA] [mol_type=genomic DNA] [specimen_voucher=JAM3573] [note=Sampling location: Sulawesi] Kaloula baleata isolate JAM3573 ","ultra conserved element locus ",ucelocus," genomic sequence",sep="")
+>kaloula_baleata_lsuhc5712	paste(">kaloula_baleata_lsuhc5712","_",ucelocus," [organism=Kaloula latidisca] [molecule=DNA] [mol_type=genomic DNA] [specimen_voucher=LSUHC5712] [note=Sampling location: Malaysia] Kaloula latidisca isolate LSUHC5712 ","ultra conserved element locus ",ucelocus," genomic sequence",sep="")
+>kaloula_baleata_rmb2401	paste(">kaloula_baleata_rmb2401","_",ucelocus," [organism=Kaloula baleata] [molecule=DNA] [mol_type=genomic DNA] [specimen_voucher=TNHC67086] [note=Sampling location: Java] Kaloula baleata isolate TNHC67086 ","ultra conserved element locus ",ucelocus," genomic sequence",sep="")
+```
 
 After making sure the key file, your fasta files and the R-code are in the same folder:
 ```
