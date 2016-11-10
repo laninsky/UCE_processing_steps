@@ -98,7 +98,8 @@ phyluce_align_remove_locus_name_from_nexus_lines --alignments incomplete_mafft_n
 phyluce_align_get_align_summary_data --alignments incomplete_mafft_fasta_no_locus_names --input-format fasta --cores 10 --log-path logs
 ```
 
-#Gblocks on aligned data (script will not work on nexus file input, even if you specify input-format nexus. You want to run this before adding missing data designators or it will attempt to implement it across the entire dataset, even across taxa the locus is not found in)
+#Gblocks on aligned data
+(script will not work on nexus file input, even if you specify input-format nexus. You want to run this before adding missing data designators or it will attempt to implement it across the entire dataset, even across taxa the locus is not found in)
 ```
 phyluce_align_get_gblocks_trimmed_alignments_from_untrimmed --alignments incomplete_mafft_fasta_no_locus_names --output incomplete_mafft_gblocks --output-format nexus --b2 0.5 --log-path logs --cores 10
 
@@ -129,11 +130,37 @@ raxmlHPC-PTHREADS-SSE3 -s 50perc_w_missing.phylip -n run2 -m GTRCATI -f a -N 100
 
 ```
 
-#Making RAxML gene trees
+#Making phylip alignments so we can use RAxML to estimate each of the gene trees
 ```
 phyluce_align_convert_one_align_to_another --alignments 50perc_w_missing --output 50perc_w_missing_phylip --input-format nexus --output-format phylip --cores 4 --log-path logs
 
-phyluce_genetrees_run_raxml_genetrees --input 50perc_w_missing_phylip --output raxml_genetrees --cores 4 --threads 1 --log-path logs
+cd 50perc_w_missing_phylip
+
+#Copy removing_missing.R from https://github.com/laninsky/Phase_hybrid_from_next_gen/blob/master/post-processing/removing_missing.R into the phylip directory
+for i in `ls *.phylip`;
+do echo $i > name;
+Rscript removing_missing.R;
+done;
+```
+
+#Running RAxML to get the genetrees. I've had problems with phyluce's method for doing this, so this is free-hand code for doing this
+```
+mkdir raxml_genetrees
+wd=`pwd`
+cd 50perc_w_missing_phylip
+unset i
+for i in `ls *.phylip`;
+do mkdir ../raxml_genetrees/$i;
+toraxml="raxmlHPC-SSE3 -m GTRGAMMA -n best -s $wd/50perc_w_missing_phylip/$i -p $RANDOM -w $wd/raxml_genetrees/$i";
+$toraxml;
+done;
+ 
+#Summarizing the best trees 
+cd ../raxml_genetrees;
+touch inputgenetrees.tre;
+for i in uce*; 
+do cat $i/RAxML_bestTree.best >> inputgenetrees.tre
+done;
 ```
 
 
