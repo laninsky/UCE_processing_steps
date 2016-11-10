@@ -104,6 +104,15 @@ phyluce_align_get_align_summary_data --alignments 50perc_w_missing --cores 10 --
 STOP HERE STEPHEN
 
 
+#Submitting to Genbank
+I've made some code that will take a tab-delimited file (called 'key') with the sample names as you have specified them in your UCE fasta files (1st column), as well as what you would like the genbank specifiers to be (2nd column). If you shove it in a folder full of fasta files labelled for each uce locus, it will use the name of the uce-loci in place of 'ucelocus' in the tab-delimited file to rename and print out the fasta sequences for each individual that has data (assuming missing is coded as "_").
+
+After making sure the key file, your fasta files and the R-code are in the same folder:
+```
+Rscript genbankrename.R
+```
+
+
 #STEP 4B
 ```
 python /public/uce/phyluce/bin/assembly/get_fastas_from_match_counts.py --contigs /home/a499a400/gekko/trinity-assemblies/contigs/ --locus-db /home/a499a400/gekko/lastz/probe.matches.sqlite --match-count-output /home/a499a400/gekko/complete.conf --output complete_fasta --log-path logs
