@@ -129,6 +129,15 @@ raxmlHPC-PTHREADS-SSE3 -s 50perc_w_missing.phylip -n run2 -m GTRCATI -f a -N 100
 
 ```
 
+#Making RAxML gene trees
+```
+phyluce_align_convert_one_align_to_another --alignments 50perc_w_missing --output 50perc_w_missing_phylip --input-format nexus --output-format phylip --cores 4 --log-path logs
+
+phyluce_genetrees_run_raxml_genetrees --input 50perc_w_missing_phylip --output raxml_genetrees --cores 4 --threads 1 --log-path logs
+```
+
+
+
 
 
 #Submitting to Genbank
