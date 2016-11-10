@@ -26,6 +26,11 @@ Running trinity assemblies using Phyluce 1.5 (http://phyluce.readthedocs.io/en/l
 ```
 phyluce_assembly_assemblo_trinity --config trinity.conf --output trinity-assemblies/ --clean --cores 12 --log-path logs
 ```
+Alternately, ABYSS:
+```
+phyluce_assembly_assemblo_abyss --config trinity.conf --output abyss-assemblies --kmer 65 --cores 12 --clean --log-path logs
+```
+
 Before matching probes to contigs, I've found I get greater success if I filter the output of trinity to just the longest isoforms (so multiple isoforms of the same gene are not present in the output)
 ```
 cd trinity-assemblies/contigs
