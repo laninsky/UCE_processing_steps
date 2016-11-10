@@ -1,5 +1,5 @@
 # UCE_processing_steps
-The general workflow for processing UCE data that I use. The code also makes extensive use of phyluce (https://github.com/faircloth-lab/phyluce) and cloudforest (https://github.com/ngcrawford/CloudForest), written by Brant Faircloth and Nick Crawford respectively (and the excellent instructions for Phyluce at http://phyluce.readthedocs.io/en/latest/assembly.html).
+My general workflow for processing UCE data with Phyluce v1.5. The code also makes extensive use of phyluce (https://github.com/faircloth-lab/phyluce) and cloudforest (https://github.com/ngcrawford/CloudForest), written by Brant Faircloth and Nick Crawford respectively (and the excellent instructions for Phyluce at http://phyluce.readthedocs.io/en/latest/assembly.html). How I dealt with data using previous Phyluce versions is in prev_phyluce_versions.md in this current directory.
 
 #Trimming and removing adaptor contamination
 The first steps involve cleaning the reads and extracting the UCEs from the overall assembled contigs. One issue I have noticed with Illumiprocessor is that it expects samples to be named like the following {name}_L001_R1_001.fastq.gz and {name}_L001_R2_001.fastq.gz. Use the sed function to rename the files if need be. Check your cleaned reads through FastQC following the illumiprocessor step, because in same cases cutadapt may be needed to remove the adaptor sequence if trimmomatic doesn't get it all.
@@ -19,7 +19,7 @@ for i in *.assembled.fastq; do basename=`echo $i | sed 's/.assembled.fastq//g'`;
 for i in *; do gzip $i/*; done
 ```
 
-After this, the first thing I do is rename all the files to lower case for the sample names, as this causes issues when converting files to phylip. I conduct the intialsteps on our local linux computers (e.g. the complabs). Things that need to be in paths: Phyluce needs to be in python path, raxml needs to be in path. For instructions on how to do this on previous Phyluce versions, please see Carl's github. I've got instructions for using Ph
+After this, the first thing I do is rename all the files to lower case for the sample names, as this causes issues when converting files to phylip. I conduct the intialsteps on our local linux computers (e.g. the complabs). Things that need to be in paths: Phyluce needs to be in python path, raxml needs to be in path.
 
 #Assembly
 Running trinity assemblies using Phyluce 1.5 (http://phyluce.readthedocs.io/en/latest/assembly.html)
@@ -37,8 +37,8 @@ cp trinity.conf abyss.conf
 
 sed -i 's/pearmergeddone/cutadapttrimmed/g' abyss.conf
 
-for i in *R1_001.fastq.gz; do basename=`echo $i | sed 's/_adapttrimmed_R1_001.fastq.gz//g'`; mkdir $basename; mv $i $basename/${basename}-READ1.fastq.gz; mv ${basename}_adapttrimmed_R2_001.fastq.gz $basename/${basename}-READ2.fastq.gz; done
-
+#ABYSS needs unzipped data
+for i in *R1_001.fastq.gz; do basename=`echo $i | sed 's/_adapttrimmed_R1_001.fastq.gz//g'`; mkdir $basename; mv $i $basename/${basename}-READ1.fastq.gz; mv ${basename}_adapttrimmed_R2_001.fastq.gz $basename/${basename}-READ2.fastq.gz; gunzip $basename/${basename}-READ1.fastq.gz; gunzip $basename/${basename}-READ2.fastq.gz; done
 
 phyluce_assembly_assemblo_abyss --config abyss.conf --output abyss-assemblies --kmer 65 --cores 12 --clean --log-path logs
 ```
@@ -119,8 +119,16 @@ phyluce_align_get_align_summary_data --alignments 50perc_w_missing --cores 10 --
 
 #Running RAxML on the concatenated dataset (without partitioning):
 ```
-raxmlHPC-AVX -s outgroup_final_bylocus_nexus.phylip -n run1 -m GTRCATI -f a -N 100 -x $RANDOM -p $RANDOM
+phyluce_align_format_nexus_files_for_raxml --alignments 50perc_w_missing --output concat_phylip
+
+cd concat_phylip
+
+raxmlHPC-PTHREADS-SSE3 -s 50perc_w_missing.phylip -n run1 -m GTRCATI -f a -N 100 -x $RANDOM -p $RANDOM -T 4
+
+raxmlHPC-PTHREADS-SSE3 -s 50perc_w_missing.phylip -n run2 -m GTRCATI -f a -N 100 -x $RANDOM -p $RANDOM -T 4
+
 ```
+
 
 
 #Submitting to Genbank
