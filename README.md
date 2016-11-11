@@ -141,6 +141,8 @@ for i in `ls *.phylip`;
 do echo $i > name;
 Rscript removing_missing.R;
 done;
+
+cd ..
 ```
 
 #Running RAxML to get the genetrees. I've had problems with phyluce's method for doing this, so this is free-hand code for doing this
