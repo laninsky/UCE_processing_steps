@@ -2,13 +2,12 @@ library(stringr)
 
 key <- as.matrix(read.table("key",sep="\t",quote=""))
 
-files <- list.files(pattern="*.fasta")
+fastafile <- as.matrix(read.table("name",sep="\t",quote=""))
 
 outputsequence <- NULL
 
-for (i in files) {
-tempfile <- as.matrix(read.table(i,sep="\t"))
-ucelocus <- gsub(".fasta","",i)
+tempfile <- as.matrix(read.table(fastafile,sep="\t"))
+ucelocus <- gsub(".fasta","",fastafile)
 
 for (j in 1:dim(key)[1]) {
 tempfile[(which(tempfile[,1]==key[j,1])),1] <- eval(parse(text=key[j,2]))
@@ -30,6 +29,5 @@ removingmissing[j,1] <- gsub("-","",removingmissing[j,1])
 }
 
 outputsequence <- rbind(outputsequence,removingmissing)
-}
 
-write.table(outputsequence,"ucegenbanksequence.fasta",quote=FALSE,row.names=FALSE,col.names=FALSE)
+write.table(outputsequence,"temp",quote=FALSE,row.names=FALSE,col.names=FALSE)
