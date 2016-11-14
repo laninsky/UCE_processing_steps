@@ -178,9 +178,16 @@ I've made some code that will take a tab-delimited file (called 'key') with the 
 >kaloula_baleata_rmb2401	paste(">kaloula_baleata_rmb2401","_",ucelocus," [organism=Kaloula baleata] [molecule=DNA] [mol_type=genomic DNA] [specimen_voucher=TNHC67086] [note=Sampling location: Java] Kaloula baleata isolate TNHC67086 ","ultra conserved element locus ",ucelocus," genomic sequence",sep="")
 ```
 
-After making sure the key file, your fasta files and the R-code are in the same folder:
+After making sure the key file, your fasta files and the R-code are in the same folder. For the linux64.tbl2asn commands, you'll need ot have created a template file through sequin:
 ```
-Rscript genbankrename.R
+for i in *.fasta;
+do echo $i > name;
+Rscript genbankrename.R;
+outputname=`echo $i | sed 's/.fasta//g'`;
+/public/linux64.tbl2asn -i temp -t up_to_affiliation_template_7Nov2016 -o $outputname.sqn -s;
+rm name;
+rm temp;
+done;
 ```
 
 
