@@ -145,7 +145,8 @@ done;
 cd ..
 ```
 
-#Running RAxML to get the genetrees. I've had problems with phyluce's method for doing this, so this is free-hand code for doing this
+#Running RAxML to get the genetrees
+I've had problems with phyluce's method for doing this, so this is free-hand code for doing this
 ```
 mkdir raxml_genetrees
 wd=`pwd`
@@ -165,7 +166,12 @@ do cat $i/RAxML_bestTree.best >> inputgenetrees.tre
 done;
 ```
 
+#Getting the ASTRID and ASTRAL species trees based off gene trees
+```
+/public/ASTRID-linux -i inputgenetrees.tre -o astrid.tre -m bionj
 
+java -jar ~/bin/ASTRAL/astral.4.10.5.jar -i input genetrees.tre -o astral.tre
+```
 
 
 
