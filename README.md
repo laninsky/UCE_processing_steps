@@ -177,7 +177,7 @@ python2 /usr/local/lib/python2.7/dist-packages/cloudforest/cloudforest_mpi.py 50
 ```
 /public/ASTRID-linux -i inputgenetrees.tre -o astrid.tre -m bionj
 
-java -jar ~/bin/ASTRAL/astral.4.10.5.jar -i input genetrees.tre -o astral.tre
+java -jar /public/Astral/astral.4.10.12.jar -i inputgenetrees.tre -o astral.tre
 ```
 
 
