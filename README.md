@@ -166,6 +166,13 @@ do cat $i/RAxML_bestTree.best >> inputgenetrees.tre
 done;
 ```
 
+#Running Cloudforest to get genetrees and models of substitution per locus
+```
+mkdir cloudforest_genetrees
+python2 /usr/local/lib/python2.7/dist-packages/cloudforest/cloudforest_mpi.py 50perc_w_missing_phylip cloudforest_genetrees genetrees /public/PhyML-3.1/PhyML-3.1_linux64 --cores 2 --parallelism multiprocessing
+
+```
+
 #Getting the ASTRID and ASTRAL species trees based off gene trees
 ```
 /public/ASTRID-linux -i inputgenetrees.tre -o astrid.tre -m bionj
