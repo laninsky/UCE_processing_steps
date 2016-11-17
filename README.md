@@ -172,21 +172,23 @@ done;
 cp -r 50perc_w_missing_phylip cloudforest_phylip
 cd cloudforest_phylip
 rm -rf *.reduced
+rm removing_missing.R
+
+#define your number of taxa (and add 10)
+notaxa=73
 
 for i in *.phylip;
-do notaxa=`head -n 1 $i | awk '{print $1}'`;
-nochars=`head -n 1 $i | awk '{print $2}'`;
-notaxa=$((notaxa+10));
+do nochars=`head -n 1 $i | awk '{print $2}'`;
 if [ $notaxa -gt $nochars ]
-then
-rm -rf $i
-fi
+then rm -rf $i;
+fi;
+echo $notaxa
 done;
 
 cd ..
 
 mkdir cloudforest_genetrees
-python2 /usr/local/lib/python2.7/dist-packages/cloudforest/cloudforest_mpi.py cloudforest_phylip cloudforest_genetrees genetrees /public/PhyML-3.1/PhyML-3.1_linux64 --cores 5 --parallelism multiprocessing
+python2 /usr/local/lib/python2.7/dist-packages/cloudforest/cloudforest_mpi.py cloudforest_phylip cloudforest_genetrees genetrees /public/PhyML-3.1/PhyML-3.1_linux64 --cores 5 --parallelism multiprocessing >> logs/cloudforest.log
 
 ```
 
