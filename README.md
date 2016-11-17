@@ -168,11 +168,12 @@ done;
 
 #Running Cloudforest to get genetrees and models of substitution per locus
 ```
-#cloudforest needs alignments to be ~10 bp longer than the number of taxa in the alignment. Define this variable.
+#cloudforest needs alignments to be ~10 bp longer than the number of taxa in the alignment, and also apparently to be longer than 100 bp. Define this variable.
 cp -r 50perc_w_missing_phylip cloudforest_phylip
 cd cloudforest_phylip
 rm -rf *.reduced
 rm removing_missing.R
+rm name
 
 #define your number of taxa (and add 10)
 notaxa=73
@@ -182,7 +183,9 @@ do nochars=`head -n 1 $i | awk '{print $2}'`;
 if [ $notaxa -gt $nochars ]
 then rm -rf $i;
 fi;
-echo $notaxa
+if [ 100 -gt $nochars ]
+then rm -rf $i;
+fi;
 done;
 
 cd ..
@@ -197,6 +200,9 @@ python2 /usr/local/lib/python2.7/dist-packages/cloudforest/cloudforest_mpi.py cl
 /public/ASTRID-linux -i inputgenetrees.tre -o astrid.tre -m bionj
 
 java -jar /public/Astral/astral.4.10.12.jar -i inputgenetrees.tre -o astral.tre
+
+#Getting local support values for ASTRID tree through Astral
+/public/Astral/astral.4.10.12.jar -q astrid.tre -i inputgenetrees.tre -o astral_posterior.tre
 ```
 
 
