@@ -168,8 +168,25 @@ done;
 
 #Running Cloudforest to get genetrees and models of substitution per locus
 ```
+#cloudforest needs alignments to be ~10 bp longer than the number of taxa in the alignment. Define this variable.
+cp -r 50perc_w_missing_phylip cloudforest_phylip
+cd cloudforest_phylip
+rm -rf *.reduced
+
+for i in *.phylip;
+do notaxa=`head -n 1 $i | awk '{print $1}'`;
+nochars=`head -n 1 $i | awk '{print $2}'`;
+notaxa=$((notaxa+10));
+if [ $notaxa -gt $nochars ]
+then
+rm -rf $i
+fi
+done;
+
+cd ..
+
 mkdir cloudforest_genetrees
-python2 /usr/local/lib/python2.7/dist-packages/cloudforest/cloudforest_mpi.py 50perc_w_missing_phylip cloudforest_genetrees genetrees /public/PhyML-3.1/PhyML-3.1_linux64 --cores 2 --parallelism multiprocessing
+python2 /usr/local/lib/python2.7/dist-packages/cloudforest/cloudforest_mpi.py cloudforest_phylip cloudforest_genetrees genetrees /public/PhyML-3.1/PhyML-3.1_linux64 --cores 5 --parallelism multiprocessing
 
 ```
 
