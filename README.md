@@ -168,22 +168,19 @@ done;
 
 #Running Cloudforest to get genetrees and models of substitution per locus
 ```
-#cloudforest needs alignments to be ~10 bp longer than the number of taxa in the alignment, and also apparently to be longer than 100 bp. Define this variable.
+#cloudforest needs alignments to be ~9 bp longer than the number of bp in the alignment minus the number taxa in the alignment
 cp -r 50perc_w_missing_phylip cloudforest_phylip
 cd cloudforest_phylip
 rm -rf *.reduced
 rm removing_missing.R
 rm name
 
-#define your number of taxa (and add 10)
-notaxa=73
-
 for i in *.phylip;
 do nochars=`head -n 1 $i | awk '{print $2}'`;
+notaxa=`head -n 1 $i | awk '{print $1}'`;
+nochars=$((nochars-notaxa))
+nochars=$((nochars-9))
 if [ $notaxa -gt $nochars ]
-then rm -rf $i;
-fi;
-if [ 100 -gt $nochars ]
 then rm -rf $i;
 fi;
 done;
