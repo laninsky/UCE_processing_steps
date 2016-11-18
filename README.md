@@ -199,7 +199,7 @@ python2 /usr/local/lib/python2.7/dist-packages/cloudforest/cloudforest_mpi.py cl
 java -jar /public/Astral/astral.4.10.12.jar -i inputgenetrees.tre -o astral.tre
 
 #Getting local support values for ASTRID tree through Astral
-/public/Astral/astral.4.10.12.jar -q astrid.tre -i inputgenetrees.tre -o astral_posterior.tre
+java -jar /public/Astral/astral.4.10.12.jar -q astrid.tre -i inputgenetrees.tre -o astrid_posterior.tre
 ```
 
 
