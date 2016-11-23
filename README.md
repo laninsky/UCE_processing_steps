@@ -190,6 +190,12 @@ cd ..
 mkdir cloudforest_genetrees
 python2 /usr/local/lib/python2.7/dist-packages/cloudforest/cloudforest_mpi.py cloudforest_phylip cloudforest_genetrees genetrees /public/PhyML-3.1/PhyML-3.1_linux64 --cores 5 --parallelism multiprocessing >> logs/cloudforest.log
 
+#NS cd into the genetrees folder. Following Phyluce code, gets output for each model
+phyluce_genetrees_split_models_from_genetrees --genetrees genetrees.tre --output output_models.txt
+
+#getting just the genetrees so that the species tree gene tree methods can be run below
+awk '{print $5}' genetrees.tre > inputgenetrees.tre
+
 ```
 
 #Getting the ASTRID and ASTRAL species trees based off gene trees
