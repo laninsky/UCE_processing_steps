@@ -193,8 +193,31 @@ python2 /usr/local/lib/python2.7/dist-packages/cloudforest/cloudforest_mpi.py cl
 #NS cd into the genetrees folder. Following Phyluce code, gets output for each model
 phyluce_genetrees_split_models_from_genetrees --genetrees genetrees.tre --output output_models.txt
 
-#getting just the genetrees so that the species tree gene tree methods can be run below
+#NS getting just the genetrees so that the species tree gene tree methods can be run below
 awk '{print $5}' genetrees.tre > inputgenetrees.tre
+
+#NS R script for concatenating together 
+cd ../cloudforest_phylip
+cp ../cloudforest_genetrees/output_models.txt output_models.txt
+R
+models <- as.matrix(read.table("output_models.txt",sep="\t"))
+models[,2] <- gsub("AICc-","",models[,2])
+modelnames <- unique(models[,2])
+modelnamecommands <- matrix(NA,ncol=1,nrow=(length(modelnames)))
+modelnamecommands <- paste("mkdir ",modelnames,sep="")
+copycommands <- matrix(NA,ncol=1,nrow=(dim(models)[1]))
+copycommands <- paste("mv ",models[,1],".phylip ", models[,2],sep="")
+# to do - phyluce conversion into concatenated alignments
+# to do - concatenating the concantenated alignments (and noting the lengths etc for the partition file: check raxml format for this)
+# writing out the file and then executing it as a bash script
+
+
+
+
+
+
+R
+
 
 ```
 
