@@ -208,7 +208,7 @@ raxmlHPC-PTHREADS-SSE3 -s concatphylip.phylip -q partitions.txt -n run1 -m GTRCA
 raxmlHPC-PTHREADS-SSE3 -s concatphylip.phylip -q partitions.txt -n run2 -m GTRCATI -f a -N 100 -x $RANDOM -p $RANDOM -T 4
 ```
 
-#Getting the ASTRID and ASTRAL species trees based off gene trees
+#Extracting genetrees from cloudforest_genetrees output
 ```
 #Getting just the genetrees so that the species tree gene tree methods can be run below
 awk '{print $5}' genetrees.tre > inputgenetrees.tre
