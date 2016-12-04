@@ -225,7 +225,8 @@ java -jar /public/Astral/astral.4.10.12.jar -i inputgenetrees.tre -o astral.tre
 java -jar /public/Astral/astral.4.10.12.jar -q astrid.tre -i inputgenetrees.tre -o astrid_posterior.tre
 ```
 
-
+#Running SVDquartets
+https://github.com/laninsky/running_SVDquartets
 
 #Submitting to Genbank
 I've made some code that will take a tab-delimited file (called 'key') with the sample names as you have specified them in your UCE fasta files (1st column), as well as the R paste function for what you would like the genbank specifiers to be (2nd column). If you shove it in a folder full of fasta files labelled for each uce locus, it will use the name of the uce-loci in place of 'ucelocus' in the tab-delimited file to rename and print out the fasta sequences for each individual that has data (assuming missing is coded as "_").
