@@ -210,7 +210,7 @@ raxmlHPC-PTHREADS-SSE3 -s concatphylip.phylip -q partitions.txt -n run2 -m GTRCA
 
 #Extracting genetrees from cloudforest_genetrees output
 ```
-#Getting just the genetrees so that the species tree gene tree methods can be run below
+#Inside the cloudforest_genetrees folder, getting just the genetrees so that the species tree gene tree methods can be run below
 awk '{print $5}' genetrees.tre > inputgenetrees.tre
 
 ```
