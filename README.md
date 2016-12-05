@@ -215,7 +215,9 @@ awk '{print $5}' genetrees.tre > inputgenetrees.tre
 
 ```
 
-#Getting the ASTRID and ASTRAL species trees based off gene trees (do this for RAxML and cloudforest gene trees)
+#Getting the ASTRID and ASTRAL species trees based off gene trees
+
+Do this for RAxML and cloudforest gene trees - navigate into each of the gene tree folders, and then run the following code
 ```
 /public/ASTRID-linux -i inputgenetrees.tre -o astrid.tre -m bionj
 
