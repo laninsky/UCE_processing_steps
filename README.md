@@ -146,7 +146,7 @@ cd ..
 ```
 
 #Running RAxML to get the genetrees
-I've had problems with phyluce's method for doing this, so this is free-hand code for doing this
+I've had problems with phyluce's method for doing this, so this is free-hand code for doing this. After you have made your inputgenetree.tre, follow the code for "Getting the ASTRID and ASTRAL species trees based off gene trees" to generate species trees off your gene trees.
 ```
 mkdir raxml_genetrees
 wd=`pwd`
@@ -191,7 +191,7 @@ mkdir cloudforest_genetrees
 python2 /usr/local/lib/python2.7/dist-packages/cloudforest/cloudforest_mpi.py cloudforest_phylip cloudforest_genetrees genetrees /public/PhyML-3.1/PhyML-3.1_linux64 --cores 5 --parallelism multiprocessing >> logs/cloudforest.log
 ```
 
-#Partitioning loci by substitution model for concatenated RAxML runs
+#Partitioning loci by substitution model for concatenated RAxML runs, using cloudforest partitions
 ```
 #cd into the genetrees folder. The following Phyluce code gets output for each model
 phyluce_genetrees_split_models_from_genetrees --genetrees genetrees.tre --output output_models.txt
@@ -215,7 +215,7 @@ awk '{print $5}' genetrees.tre > inputgenetrees.tre
 
 ```
 
-#Getting the ASTRID and ASTRAL species trees based off gene trees
+#Getting the ASTRID and ASTRAL species trees based off gene trees (do this for RAxML and cloudforest gene trees)
 ```
 /public/ASTRID-linux -i inputgenetrees.tre -o astrid.tre -m bionj
 
