@@ -251,8 +251,8 @@ rm temp;
 done;
 ```
 
-#Extracting mitogenomes - option 1: https://github.com/laninsky/Pulling-out-mitogenomes-from-UCE-data/blob/master/The_mito_pipeline.md
-Uses contig information from assembly step to generate mitogenomes
+#Extracting mitogenomes - option 1: Pulling-out-mitogenomes-from-UCE-data 
+Uses contig information from assembly step to generate mitogenomes: https://github.com/laninsky/Pulling-out-mitogenomes-from-UCE-data/blob/master/The_mito_pipeline.md
 
 #Extracting mitogenomes - option 2: MITObim
 Uses unassembled reads to generate mitogenomes. Install MIRA and MITObim: https://github.com/chrishah/MITObim
