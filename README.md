@@ -251,4 +251,19 @@ rm temp;
 done;
 ```
 
+#Extracting mitogenomes - option 1: https://github.com/laninsky/Pulling-out-mitogenomes-from-UCE-data/blob/master/The_mito_pipeline.md
+Uses contig information from assembly step to generate mitogenomes
 
+#Extracting mitogenomes - option 2: MITObim
+Uses unassembled reads to generate mitogenomes. Install MIRA and MITObim: https://github.com/chrishah/MITObim
+
+Interleave F and R reads (using trimmed reads from after illumiprocessor/cut-adapt stage)
+```
+/public/MITObim/misc_scripts/interleave-fastqgz-MITOBIM.py sle1004-READ1.fastq sle1004-READ2.fastq > sle1004_interleaved.fastq
+```
+Generate reference file based on mitogenome information available for same or related species on GenBank
+
+Run MITObim:
+```
+/public/MITObim/MITObim_1.8.pl -end 100 -sample sle1004 -ref hydrophiloidea --quick /home/a499a400/beetles/mitogenome/sequence.fasta -readpool sle1004_interleaved.fastq --pair --clean --denovo &> log
+```
