@@ -271,11 +271,11 @@ In the last iteration folder, there will be an assembly subfolder, and within th
 ```
 head -n 718 /home/a499a400/beetles/mitogenome/sle117/iteration16/sle117-hydrophiloidea_assembly/sle117-hydrophiloidea_d_results/sle117-hydrophiloidea_LargeContigs_out_sle117.unpadded.fasta | tail -n 266 > sle117_putative_mito.fasta
 ```
-where 718 = the "end" line number, and 266 = the end line number - the start line number + 1. We then check for circularity of this sequence by:
+where 718 = the "end" line number, and 266 = the end line number - the start line number + 1. If this contig is about as long as we expect the mitogenome to be (15 kbp plus), We then check for circularity of this sequence by:
 ```
 /public/MITObim/misc_scripts/circules.py -f sle117_putative_mito.fasta -k 10-31
 ```
-If no strong signal of circularity is found, it is likely we have just recovered a partial mitogenome. In this case, I like to take this file and then run through the MITObim steps again, using it as the starting reference, just to see if we can extend it by just giving it the one reference to work with:
+If no strong signal of circularity is found, it is likely we have just recovered a partial mitogenome. In this case, I like to take the next longest contig and run it through the above steps, before combining it with our first contig and running through the MITObim steps again, using these as the starting reference, just to see if we can extend them by just giving it a limited number of references to work with:
 ```
 mv log log_first_run
 /public/MITObim/MITObim_1.8.pl -end 100 -sample sle117 -ref sle117 --quick sle117_putative_mito.fasta -readpool sle117_interleaved.fastq --pair --clean --denovo &> log
