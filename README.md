@@ -267,3 +267,8 @@ Run MITObim:
 ```
 /public/MITObim/MITObim_1.8.pl -end 100 -sample sle1004 -ref hydrophiloidea --quick /home/a499a400/beetles/mitogenome/sequence.fasta -readpool sle1004_interleaved.fastq --pair --clean --denovo &> log
 ```
+In the last iteration folder, there will be an assembly subfolder, and within that subfolder, a folder called *.info. Inside this folder will be a file called *_info_contigstats.txt. I pull this into my favorite spreadsheet program and sort on length. After identifying the longest contig, I search for its name in the *assembly/*results/<sample_name>-<ref_name>_LargeContigs_out_<sample_name>.unpadded.fasta file through less, with line numbers activated (less -N). After identifying its header line number, and last line (I do a search for '>', find where the next sequence begins, and back up one), I extract this contig by:
+```
+head -n 718 /home/a499a400/beetles/mitogenome/sle117/iteration16/sle117-hydrophiloidea_assembly/sle117-hydrophiloidea_d_results/sle117-hydrophiloidea_LargeContigs_out_sle117.unpadded.fasta | tail -n 266 > sle117_putative_mito.fasta
+```
+where 718 = the "end" line number, and 266 = the end line number - the start line number + 1.
