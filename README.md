@@ -275,8 +275,15 @@ where 718 = the "end" line number, and 266 = the end line number - the start lin
 ```
 /public/MITObim/misc_scripts/circules.py -f sle117_putative_mito.fasta -k 10-31
 ```
-If no strong signal of circularity is found, it is likely we have just recovered a partial mitogenome. In this case (or in the case of shorter contigs << 15 kbp), I like to take the next longest contig and run it through the above steps, before combining it with our first contig and running through the MITObim steps again, using these as the starting reference, just to see if we can extend them/obtain an entire mitogenome by just giving it a limited number of references to work with (rather than splitting our reads among the many baits in the GenBank reference file):
+If no strong signal of circularity is found, it is likely we have just recovered a partial mitogenome. In this case (or in the case of shorter contigs << 15 kbp), I like to take the next longest contig and run it through the above steps, before combining it with our first contig. I check that these seem to be mitochondrial in origin through BLAST, and then run through the MITObim steps again, using these as the starting reference. I do this to see if we can extend the contigs/obtain an entire mitogenome by just giving it just a limited number of references to work with (rather than splitting our reads among the many baits in the GenBank reference file):
 ```
-mv log log_first_run
+mkdir original_run
+mv iteration*/*assembly/*info/*contigreadlist.txt original_run
+mv iteration*/*assembly/*info/*contigstats.txt original_run
+#replace sle117 with your sample name
+mv iteration*/*assembly/*results/sle117-hydrophiloidea_LargeContigs_out_sle117.unpadded.fasta original_run
+mv log original_run
+rm -rf iteration*
+
 /public/MITObim/MITObim_1.8.pl -end 100 -sample sle117 -ref sle117 --quick sle117_putative_mito.fasta -readpool sle117_interleaved.fastq --pair --clean --denovo &> log
 ```
