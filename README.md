@@ -302,10 +302,27 @@ mv log sle_specific_run
 rm -rf iteration*
 ```
 
-I then map our total paired end reads to these final MITObim contigs and generate a final consensus using bwa, gatk and picard (you'll need to have these installed).
-```
+I then map our total paired end reads to these final MITObim contigs and generate a final consensus using bwa, samtools, gatk and picard (you'll need to have these installed). Change all instances of sle117 in the following code to your own sample name. In the  FindCoveredIntervals I've chosen to only output sequence where the coverage was >= 4 reads (contigs will be split into multiple contigs if they dip below this). You can tweak this if you like.
+``` 
 bwa index -a is sle117_final_mitobim.fasta 
 samtools faidx sle117_final_mitobim.fasta 
-/public/jdk1.8.0_112/bin/java -jar /public/picard.jar CreateSequenceDictionary R=sle117_final_mitobim.fasta O=reference.dict
+/public/jdk1.8.0_112/bin/java -jar /public/picard.jar CreateSequenceDictionary R=sle117_final_mitobim.fasta O=sle117_final_mitobim.dict
 bwa mem sle117_final_mitobim.fasta sle117-READ1.fastq sle117-READ2.fastq > temp.sam
+/public/jdk1.8.0_112/bin/java -jar /public/picard.jar AddOrReplaceReadGroups I=temp.sam O=tempsort.sam SORT_ORDER=coordinate LB=rglib PL=illumina PU=phase SM=everyone
+/public/jdk1.8.0_112/bin/java -jar /public/picard.jar MarkDuplicates MAX_FILE_HANDLES=1000 I=tempsort.sam O=tempsortmarked.sam M=temp.metrics AS=TRUE
+/public/jdk1.8.0_112/bin/java -jar /public/picard.jar SamFormatConverter I=tempsortmarked.sam O=tempsortmarked.bam
+samtools index tempsortmarked.bam
+/public/jdk1.8.0_112/bin/java -jar /public/GenomeAnalysisTK.jar -T RealignerTargetCreator -R sle117_final_mitobim.fasta -I tempsortmarked.bam -o tempintervals.list
+/public/jdk1.8.0_112/bin/java -jar /public/GenomeAnalysisTK.jar -T IndelRealigner -R sle117_final_mitobim.fasta -I tempsortmarked.bam -targetIntervals tempintervals.list -o temp_realigned_reads.bam
+/public/jdk1.8.0_112/bin/java -jar /public/GenomeAnalysisTK.jar -T DepthOfCoverage -R sle117_final_mitobim.fasta -I temp_realigned_reads.bam -o temp.coverage
 
+/public/jdk1.8.0_112/bin/java -jar /public/GenomeAnalysisTK.jar -T HaplotypeCaller -R sle117_final_mitobim.fasta -I temp_realigned_reads.bam --genotyping_mode DISCOVERY -stand_call_conf 30 -o temp_raw_variants.vcf --maxNumHaplotypesInPopulation 1
+/public/jdk1.8.0_112/bin/java -jar /public/GenomeAnalysisTK.jar -T ReadBackedPhasing -R sle117_final_mitobim.fasta -I temp_realigned_reads.bam  --variant temp_raw_variants.vcf -o temp_phased_SNPs.vcf
+/public/jdk1.8.0_112/bin/java -jar /public/GenomeAnalysisTK.jar -T FindCoveredIntervals -R sle117_final_mitobim.fasta -I temp_realigned_reads.bam -cov 4 -o temp_covered.list
+/public/jdk1.8.0_112/bin/java -jar /public/GenomeAnalysisTK.jar -T FastaAlternateReferenceMaker -V temp_phased_SNPs.vcf -R sle117_final_mitobim.fasta -L temp_covered.list -o sle117_final_mapped.fasta
+mv temp.coverage coverage.txt
+rm temp*
+```
+After verifying that the fragments are mitochondrial through BLAST, I annotate them via MITOS: http://mitos.bioinf.uni-leipzig.de/
+
+You can then extract homologous regions across samples for downstream analyses based on the annotations.
