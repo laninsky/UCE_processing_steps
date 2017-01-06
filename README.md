@@ -275,7 +275,12 @@ where 718 = the "end" line number, and 266 = the end line number - the start lin
 ```
 /public/MITObim/misc_scripts/circules.py -f sle117_putative_mito.fasta -k 10-31
 ```
-If no strong signal of circularity is found, it is likely we have just recovered a partial mitogenome. In this case (or in the case of shorter contigs << 15 kbp), I like to take the next longest contig and run it through the above steps, before combining it with our first contig. I check that these seem to be mitochondrial in origin through BLAST, and that they don't overlap in my favorite assembler (combining them if they do, and then running them through the circularity script), I then run through the MITObim steps again, using these as the starting reference. I do this to see if we can extend the contigs/obtain an entire mitogenome by just giving it just a limited number of references to work with (rather than splitting our reads among the many baits in the GenBank reference file):
+If no strong signal of circularity is found, it is likely we have just recovered a partial mitogenome. In this case (or in the case of shorter contigs less than 15 kbp), I like to take the next longest contig and run it through the above steps, before combining it with our first contig. I check that these seem to be mitochondrial in origin through the BLAST web-server, and that they don't overlap in my favorite assembler (combining them if they do, and then running them through the circularity script) and by doing a command-line self-blast:
+```
+makeblastdb -in sle1004_putative_mito.fasta -dbtype nucl
+blastn -db sle1004_putative_mito.fasta -query sle1004_putative_mito.fasta -evalue 0.001 -outfmt 6 | awk '$7!=$9 {print $0}'
+```
+You are looking for matches between the beginning and end of the molecule. If you find them, delete the overlap at the beginning. I then run through the MITObim steps again, using these as the starting reference. I do this to see if we can extend the contigs/obtain an entire mitogenome by just giving it just a limited number of references to work with (rather than splitting our reads among the many baits in the GenBank reference file):
 ```
 mkdir original_run
 mv iteration*/*assembly/*info/*contigreadlist.txt original_run
@@ -287,11 +292,14 @@ rm -rf iteration*
 
 /public/MITObim/MITObim_1.8.pl -end 100 -sample sle117 -ref sle117 --quick sle117_putative_mito.fasta -readpool sle117_interleaved.fastq --pair --clean --denovo &> log
 ```
-After this run, I follow the same steps as above (pulling out the largest contigs, checking whether they are circular, pulling out the next largest contig if not, confirming they are mtDNA through BLAST). 
+After this run, I follow the same steps as above (pulling out the largest contigs, checking whether they are circular/there is overlap between the beginning and the end, pulling out the next largest contig if not, confirming they are mtDNA through BLAST). 
 ```
 head -n 718 /home/a499a400/beetles/mitogenome/sle117/iteration16/sle117-hydrophiloidea_assembly/sle117-hydrophiloidea_d_results/sle117-hydrophiloidea_LargeContigs_out_sle117.unpadded.fasta | tail -n 266 > sle117_final_mitobim.fasta
 
 /public/MITObim/misc_scripts/circules.py -f sle117_final_mitobim.fasta -k 10-31
+
+makeblastdb -in sle1004_final_mitobim.fasta -dbtype nucl
+blastn -db sle1004_final_mitobim.fasta -query sle1004_final_mitobim.fasta -evalue 0.001 -outfmt 6 | awk '$7!=$9 {print $0}'
 
 mkdir sle_specific_run
 mv iteration*/*assembly/*info/*contigreadlist.txt sle_specific_run
