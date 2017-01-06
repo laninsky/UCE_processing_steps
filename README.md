@@ -287,3 +287,25 @@ rm -rf iteration*
 
 /public/MITObim/MITObim_1.8.pl -end 100 -sample sle117 -ref sle117 --quick sle117_putative_mito.fasta -readpool sle117_interleaved.fastq --pair --clean --denovo &> log
 ```
+After this run, I follow the same steps as above (pulling out the largest contigs, checking whether they are circular, pulling out the next largest contig if not, confirming they are mtDNA through BLAST). 
+```
+head -n 718 /home/a499a400/beetles/mitogenome/sle117/iteration16/sle117-hydrophiloidea_assembly/sle117-hydrophiloidea_d_results/sle117-hydrophiloidea_LargeContigs_out_sle117.unpadded.fasta | tail -n 266 > sle117_final_mitobim.fasta
+
+/public/MITObim/misc_scripts/circules.py -f sle117_final_mitobim.fasta -k 10-31
+
+mkdir sle_specific_run
+mv iteration*/*assembly/*info/*contigreadlist.txt sle_specific_run
+mv iteration*/*assembly/*info/*contigstats.txt sle_specific_run
+#replace sle117 with your sample name
+mv iteration*/*assembly/*results/sle117-sle117_LargeContigs_out_sle117.unpadded.fasta sle_specific_run
+mv log sle_specific_run
+rm -rf iteration*
+```
+
+I then map our total paired end reads to these final MITObim contigs and generate a final consensus using bwa, gatk and picard (you'll need to have these installed).
+```
+bwa index -a is sle117_final_mitobim.fasta 
+samtools faidx sle117_final_mitobim.fasta 
+/public/jdk1.8.0_112/bin/java -jar /public/picard.jar CreateSequenceDictionary R=sle117_final_mitobim.fasta O=reference.dict
+bwa mem sle117_final_mitobim.fasta sle117-READ1.fastq sle117-READ2.fastq > temp.sam
+
