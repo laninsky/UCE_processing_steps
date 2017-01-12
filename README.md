@@ -273,15 +273,29 @@ echo `pwd`/iteration26/sle638-hydrophiloidea_assembly/sle638-hydrophiloidea_d_re
 
 Rscript extract_contigs.R
 ```
-
 If you only have a single contig you can check for circularity of this sequence by:
 ```
 /public/MITObim/misc_scripts/circules.py -f sle117_putative_mito.fasta -k 10-31
 ```
-If no strong signal of circularity is found/we have multiple contigs, it is likely we have just recovered a partial mitogenome. I next check that the contigs seem to be mitochondrial in origin through the BLAST web-server, and that they don't overlap in my favorite assembler and by doing a command-line self-blast:
+If no strong signal of circularity is found/we have multiple contigs, it is likely we have just recovered a partial mitogenome. I next use blast/R to combine contigs that match to another contig within 50 bp of their end.
 ```
-makeblastdb -in sle1004_putative_mito.fasta -dbtype nucl
-blastn -db sle1004_putative_mito.fasta -query sle1004_putative_mito.fasta -evalue 0.001 -outfmt 6 | awk '$7!=$9 {print $0}'
+echo sle638-hydrophiloidea.fasta > contig_file_name 
+
+old_line_number=`wc -l sle638-hydrophiloidea.fasta`
+makeblastdb -in  sle638-hydrophiloidea.fasta -dbtype nucl
+
+blastn -db  sle638-hydrophiloidea.fasta -query  sle638-hydrophiloidea.fasta -evalue 0.001 -outfmt "6 qacc sacc pident length qlen qstart qend slen sstart send evalue bitscore" | awk '$1!=$2 {print $0}' > blast_output.txt
+
+Rscript blast_combine.R
+
+new_line_number=`wc -l sle638-hydrophiloidea.fasta`
+echo $old_line_number
+echo $new_line_number
+```
+
+Keep looping through the above blast and R-code until your file doesn't change in length/size. Following this, I check check that the contigs seem to be mitochondrial in origin through the BLAST web-server, and that they don't overlap in my favorite assembler and by doing a command-line self-blast:
+```
+
 ```
 You are looking for matches between the beginning/end and end/beginning of the molecules (some may be reverse-complemented in the match). If you find them, delete the overlaps and combine the contigs (and then run them through the circularity script if you do end up with just one contig). I then run through the MITObim steps again, using these refined contigs as the starting reference. I do this to see if we can extend the contigs/obtain an entire mitogenome by just giving it just a limited number of references to work with (rather than splitting our reads among the many baits in the GenBank reference file):
 ```
