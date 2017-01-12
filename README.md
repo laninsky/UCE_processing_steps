@@ -267,20 +267,23 @@ Run MITObim:
 ```
 /public/MITObim/MITObim_1.8.pl -end 100 -sample sle1004 -ref hydrophiloidea --quick /home/a499a400/beetles/mitogenome/sequence.fasta -readpool sle1004_interleaved.fastq --pair --clean --denovo &> log
 ```
-In the last iteration folder, there will be an assembly subfolder, and within that subfolder, a folder called *.info. Inside this folder will be a file called *_info_contigstats.txt. I pull this into my favorite spreadsheet program and sort on length. After identifying the longest contig, I search for its name in the *assembly/*results/<sample_name>-<ref_name>_LargeContigs_out_<sample_name>.unpadded.fasta file through less, with line numbers activated (less -N). After identifying its header line number, and last line (I do a search for '>', find where the next sequence begins, and back up one), I extract this contig by:
+In the last iteration folder, there will be an assembly subfolder, and within that subfolder, a folder called *.info. Inside this folder will be a file called *_info_contigstats.txt. I pull this into my favorite spreadsheet program and sort on length. After identifying the contigs > 1,000bp, I copy them into a text file (each contig name on a new line) called "extract_contigs.txt". After putting extract_contigs.R in the same directory as "extract_contigs.txt", I set the file name for the contig file and then:
 ```
-head -n 718 /home/a499a400/beetles/mitogenome/sle117/iteration16/sle117-hydrophiloidea_assembly/sle117-hydrophiloidea_d_results/sle117-hydrophiloidea_LargeContigs_out_sle117.unpadded.fasta | tail -n 266 > sle117_putative_mito.fasta
+echo `pwd`/iteration26/sle638-hydrophiloidea_assembly/sle638-hydrophiloidea_d_results/sle638-hydrophiloidea_LargeContigs_out_sle638.unpadded.fasta > contig_file_name
+
+Rscript extract_contigs.R
 ```
-where 718 = the "end" line number, and 266 = the end line number - the start line number + 1. If this contig is about as long as we expect the mitogenome to be (15 kbp plus), We then check for circularity of this sequence by:
+
+If you only have a single contig you can check for circularity of this sequence by:
 ```
 /public/MITObim/misc_scripts/circules.py -f sle117_putative_mito.fasta -k 10-31
 ```
-If no strong signal of circularity is found, it is likely we have just recovered a partial mitogenome. In this case (or in the case of shorter contigs less than 15 kbp), I like to take the next longest contig and run it through the above steps, before combining it with our first contig. I check that these seem to be mitochondrial in origin through the BLAST web-server, and that they don't overlap in my favorite assembler (combining them if they do, and then running them through the circularity script) and by doing a command-line self-blast:
+If no strong signal of circularity is found/we have multiple contigs, it is likely we have just recovered a partial mitogenome. I next check that the contigs seem to be mitochondrial in origin through the BLAST web-server, and that they don't overlap in my favorite assembler and by doing a command-line self-blast:
 ```
 makeblastdb -in sle1004_putative_mito.fasta -dbtype nucl
 blastn -db sle1004_putative_mito.fasta -query sle1004_putative_mito.fasta -evalue 0.001 -outfmt 6 | awk '$7!=$9 {print $0}'
 ```
-You are looking for matches between the beginning and end of the molecule. If you find them, delete the overlap at the beginning. I then run through the MITObim steps again, using these as the starting reference. I do this to see if we can extend the contigs/obtain an entire mitogenome by just giving it just a limited number of references to work with (rather than splitting our reads among the many baits in the GenBank reference file):
+You are looking for matches between the beginning/end and end/beginning of the molecules (some may be reverse-complemented in the match). If you find them, delete the overlaps and combine the contigs (and then run them through the circularity script if you do end up with just one contig). I then run through the MITObim steps again, using these refined contigs as the starting reference. I do this to see if we can extend the contigs/obtain an entire mitogenome by just giving it just a limited number of references to work with (rather than splitting our reads among the many baits in the GenBank reference file):
 ```
 mkdir original_run
 mv iteration*/*assembly/*info/*contigreadlist.txt original_run
