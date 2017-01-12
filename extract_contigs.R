@@ -9,11 +9,12 @@ title_lines <- which(contigs[,1] %in% contigs_names)
 output <- NULL
 for(i in title_lines) {
   output <- rbind(output,contigs[i,1])
-  for(j in (i+1):(dim(contigs)[1])) {
+  output <- rbind(output,contigs[(i+1),1])
+  for(j in (i+2):(dim(contigs)[1])) {
     if(grepl(">",contigs[j,1],fixed=TRUE)) {
       break
     }
-    output <- rbind(output,contigs[j,1])
+    output[(dim(output)[1]),1] <- paste(output[(dim(output)[1]),1],contigs[j,1],sep="")
   }
 }
 
