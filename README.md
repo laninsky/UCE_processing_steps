@@ -277,7 +277,7 @@ If you only have a single contig you can check for circularity of this sequence 
 ```
 /public/MITObim/misc_scripts/circules.py -f sle117_putative_mito.fasta -k 10-31
 ```
-If no strong signal of circularity is found/we have multiple contigs, it is likely we have just recovered a partial mitogenome. I next use blast/R to combine contigs that match to another contig within 50 bp of their end.
+If no strong signal of circularity is found/we have multiple contigs, it is likely we have just recovered a partial mitogenome. I next use blast/R (make sure you have https://www.bioconductor.org/install/#update-bioconductor-packages installed - biostrings in particular) to combine contigs that match to another contig within 50 bp of their end.
 ```
 echo sle638-hydrophiloidea.fasta > contig_file_name 
 
