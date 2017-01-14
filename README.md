@@ -293,11 +293,7 @@ echo $old_line_number
 echo $new_line_number
 ```
 
-Keep looping through the above blast and R-code until your file doesn't change in length/size. Following this, I check check that the contigs seem to be mitochondrial in origin through the BLAST web-server, and that they don't overlap in my favorite assembler and by doing a command-line self-blast:
-```
-
-```
-You are looking for matches between the beginning/end and end/beginning of the molecules (some may be reverse-complemented in the match). If you find them, delete the overlaps and combine the contigs (and then run them through the circularity script if you do end up with just one contig). I then run through the MITObim steps again, using these refined contigs as the starting reference. I do this to see if we can extend the contigs/obtain an entire mitogenome by just giving it just a limited number of references to work with (rather than splitting our reads among the many baits in the GenBank reference file):
+Keep looping through the above blast and R-code until your file doesn't change in length/size. Following this, I check check that the contigs seem to be mitochondrial in origin through the BLAST web-server, and that they don't overlap in my favorite assembler (i.e. blast hasn't missed anything). I then run through the MITObim steps again, using these refined contigs as the starting reference. I do this to see if we can extend the contigs/obtain an entire mitogenome by just giving it just a limited number of references to work with (rather than splitting our reads among the many baits in the GenBank reference file):
 ```
 mkdir original_run
 mv iteration*/*assembly/*info/*contigreadlist.txt original_run
@@ -311,8 +307,6 @@ rm -rf iteration*
 ```
 After this run, I follow the same steps as above (pulling out the largest contigs, checking whether they are circular/there is overlap between the beginning and the end, pulling out the next largest contig if not, confirming they are mtDNA through BLAST). 
 ```
-head -n 718 /home/a499a400/beetles/mitogenome/sle117/iteration16/sle117-hydrophiloidea_assembly/sle117-hydrophiloidea_d_results/sle117-hydrophiloidea_LargeContigs_out_sle117.unpadded.fasta | tail -n 266 > sle117_final_mitobim.fasta
-
 /public/MITObim/misc_scripts/circules.py -f sle117_final_mitobim.fasta -k 10-31
 
 makeblastdb -in sle1004_final_mitobim.fasta -dbtype nucl
