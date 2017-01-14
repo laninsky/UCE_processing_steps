@@ -31,6 +31,8 @@ blast <- blast[subsetrows,]
 #1     2     3       4     5     6     7     8     9    10
 #qacc sacc pident length qlen qstart qend slen sstart send evalue bitscore
 
+if(length(blast)>0) {
+
 # Stepping through the blast table
 for(i in 1:(dim(blast)[1])) {
 #If either sequence name is na, skipping to the next row
@@ -142,3 +144,5 @@ for(i in 1:(dim(blast)[1])) {
 }
   
 write.table(contigs,contig_file_name[1,1],quote=FALSE,row.names=FALSE,col.names=FALSE)
+
+}
