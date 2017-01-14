@@ -1,3 +1,4 @@
+library(Biostrings)
 #Reading in the contigs > 1000bp
 contig_file_name <- as.matrix(read.table("contig_file_name"))
 contigs <- as.matrix(read.table(contig_file_name[1,1]))
@@ -19,9 +20,9 @@ qbeg_sbeg <- qbeginning[qbeginning %in% sbeginning]
 #Lines in the blast table where the blast match is at the beginning of the query, and the beginning of the subject
 qbeg_send <- qbeginning[qbeginning %in% send]
 #Lines in the blast table where the blast match is at the end of the query, and the beginning of the subject
-qend_sbeg <- qbeginning[qend %in% sbeginning]
+qend_sbeg <- qend[qend %in% sbeginning]
 #Lines in the blast table where the blast match is at the end of the query, and the end of the subject
-qend_send <- qbeginning[qend %in% send]
+qend_send <- qend[qend %in% send]
 
 #Subsetting these promising rows (overhangs won't be in the middle of contigs)
 subsetrows <- unique(c(qbeg_sbeg,qbeg_send,qend_sbeg,qend_send))
@@ -74,7 +75,7 @@ for(i in 1:(dim(blast)[1])) {
       outputseq <- paste(outputseq,collapse="")
       outputseq <- toString(reverseComplement(DNAString(outputseq)))
       # We then paste the reversecomped sequence to the second
-      outputseq <- paste(outputseq,temp2_seq,collapse="")
+      outputseq <- paste(outputseq,temp2_seq,sep="")
     } else {
     #This section is for matches at the beginning of contig 1, and at the end of contig 2. Neither sequence should be reverse comped in this case.
       if((((as.numeric(blast[i,7])-as.numeric(blast[i,6]))*(as.numeric(blast[i,10])-as.numeric(blast[i,9]))))<0) {
@@ -90,10 +91,12 @@ for(i in 1:(dim(blast)[1])) {
       outputseq <- outputseq[-1:-cut]
       outputseq <- paste(outputseq,collapse="")
       #We stick them together with contig 2 first, then contig 1
-      outputseq <- paste(temp2_seq,outputseq,collapse="")
-  } else {
-    # 
+      outputseq <- paste(temp2_seq,outputseq,sep="")
+    }  
+   } else {
+    # This is when the match is at the end of contig 1 and the beginning of contig 2
     if(temp2_stat=="begin") {
+      #Neither sequence should be reverse comped
       if((((as.numeric(blast[i,7])-as.numeric(blast[i,6]))*(as.numeric(blast[i,10])-as.numeric(blast[i,9]))))<0) {
         next
       }
@@ -103,37 +106,39 @@ for(i in 1:(dim(blast)[1])) {
       } else {
         cut <- as.numeric(blast[i,9])
       }
+      #Cutting out the overlapping bit from contig 2
       outputseq <- outputseq[-1:-cut]
       outputseq <- paste(outputseq,collapse="")
-      outputseq <- paste(temp1_seq,outputseq,collapse="")
-    } else {      
-        if((((as.numeric(blast[i,7])-as.numeric(blast[i,6]))*(as.numeric(blast[i,10])-as.numeric(blast[i,9]))))>0) {
-          next
-        }
-  
-  
-  # code to remove these sequences from the rest of the table #
-  rm_rows <- c(temp1_name_row,temp2_name_row,temp1_seq_row,temp2_seq_row)
-  contigs <- contigs[-rm_rows,]
-  
-  
-
-title_lines <- which(contigs[,1] %in% contigs_names)
-
-output <- NULL
-for(i in title_lines) {
-  output <- rbind(output,contigs[i,1])
-  output <- rbind(output,contigs[(i+1),1])
-  for(j in (i+2):(dim(contigs)[1])) {
-    if(grepl(">",contigs[j,1],fixed=TRUE)) {
-      break
+      #Pasting it together with contig 1 as the first, followed by contig 2
+      outputseq <- paste(temp1_seq,outputseq,sep="")
+    } else {
+      #This final option is when both matches are at the end of the fragment. At least one of the fragments should be reverse comped
+       if((((as.numeric(blast[i,7])-as.numeric(blast[i,6]))*(as.numeric(blast[i,10])-as.numeric(blast[i,9]))))>0) {
+         next
+       }
+       outputseq <- unlist(strsplit(temp2_seq,""))
+       #opposite from all previous, because we are cutting off the end of the fragment
+       if(as.numeric(blast[i,10])>as.numeric(blast[i,9])) {
+         cut <- as.numeric(blast[i,9])
+       } else {
+         cut <- as.numeric(blast[i,10])
+       }
+       outputseq <- outputseq[-cut:-(length(outputseq))]
+       outputseq <- paste(outputseq,collapse="")
+       outputseq <- toString(reverseComplement(DNAString(outputseq)))
+       # We then paste the first contig to the reversecomped second
+       outputseq <- paste(outputseq,temp2_seq,sep="")
     }
-    output[(dim(output)[1]),1] <- paste(output[(dim(output)[1]),1],contigs[j,1],sep="")
   }
+    # If we've got this far, removing the original sequence rows
+    rm_rows <- c(temp1_name_row,temp2_name_row,temp1_seq_row,temp2_seq_row)
+    contigs <- as.matrix(contigs[-rm_rows,])
+    #now adding our new rows
+    contigs <- rbind(contigs,(paste(">",blast[i,1],"-",blast[i,2],sep="")))
+    contigs <- rbind(contigs, outputseq)
+    #Now going through the blast table and getting rid of both of these names, because the original sequences no longer exist.
+    rm_rows <- unique(c((which(blast[,1]==blast[i,1])),(which(blast[,2]==blast[i,1])),(which(blast[,1]==blast[i,2])),(which(blast[,2]==blast[i,2]))))
+    blast[rm_rows,1:2] <- NA
 }
-
-names <- unlist(strsplit(contig_file_name,"/"))
-names <- unlist(strsplit(names[length(names)],"_"))
-names <- paste(names[1],".fasta",sep="")
-
-write.table(output,names,quote=FALSE,row.names=FALSE,col.names=FALSE)
+  
+write.table(contigs,contig_file_name[1,1],quote=FALSE,row.names=FALSE,col.names=FALSE)
