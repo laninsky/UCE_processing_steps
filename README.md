@@ -265,7 +265,7 @@ Generate reference file based on mitogenome information available for same or re
 
 Run MITObim:
 ```
-/public/MITObim/MITObim_1.8.pl -end 100 -sample sle1004 -ref hydrophiloidea --quick /home/a499a400/beetles/mitogenome/sequence.fasta -readpool sle1004_interleaved.fastq --pair --clean --denovo &> log
+/public/MITObim/MITObim_1.8.pl -end 100 -sample sle56 -ref hydrophiloidea --quick /home/a499a400/beetles/mitogenome_18_28S/sequence.fasta -readpool sle56_interleaved.fastq --pair --clean --denovo &> log
 ```
 In the last iteration folder, there will be an assembly subfolder, and within that subfolder, a folder called *.info. Inside this folder will be a file called *_info_contigstats.txt. I pull this into my favorite spreadsheet program and sort on length. After identifying the contigs > 1,000bp, I copy them into a text file (each contig name on a new line) called "extract_contigs.txt". After putting extract_contigs.R in the same directory as "extract_contigs.txt", I set the file name for the contig file and then:
 ```
