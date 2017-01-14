@@ -18,6 +18,7 @@ for(i in title_lines) {
   }
 }
 
+
 names <- unlist(strsplit(contig_file_name,"/"))
 names <- unlist(strsplit(names[length(names)],"_"))
 names <- paste(names[1],".fasta",sep="")
