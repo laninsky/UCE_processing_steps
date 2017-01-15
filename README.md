@@ -310,7 +310,7 @@ After this run, I follow the same steps as above (pulling out the largest contig
 /public/MITObim/misc_scripts/circules.py -f sle117_final_mitobim.fasta -k 10-31
 
 makeblastdb -in sle1004_final_mitobim.fasta -dbtype nucl
-blastn -db sle1004_final_mitobim.fasta -query sle1004_final_mitobim.fasta -evalue 0.001 -outfmt 6 | awk '$7!=$9 {print $0}'
+blastn -db sle1004_final_mitobim.fasta -query sle1004_final_mitobim.fasta -evalue 0.001 -outfmt 6 | awk '$1!=$2 {print $0}'
 
 mkdir sle_specific_run
 mv iteration*/*assembly/*info/*contigreadlist.txt sle_specific_run
