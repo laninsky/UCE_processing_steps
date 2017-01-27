@@ -32,7 +32,10 @@ blast <- blast[subsetrows,]
 #qacc sacc pident length qlen qstart qend slen sstart send evalue bitscore
 
 if(length(blast)>0) {
-
+  if(!(is.matrix(blast))) {
+    blast <- matrix(blast,nrow=1)
+  }
+  
 # Stepping through the blast table
 for(i in 1:(dim(blast)[1])) {
 #If either sequence name is na, skipping to the next row
