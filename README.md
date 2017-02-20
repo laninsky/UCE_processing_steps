@@ -279,16 +279,17 @@ If you only have a single contig you can check for circularity of this sequence 
 ```
 If no strong signal of circularity is found/we have multiple contigs, it is likely we have just recovered a partial mitogenome. I next use blast/R (make sure you have https://www.bioconductor.org/install/#update-bioconductor-packages installed - Biostrings in particular) to combine contigs that match to another contig within 50 bp of their end.
 ```
-echo sle638-hydrophiloidea.fasta > contig_file_name 
+i=sle638-hydrophiloidea.fasta
+echo $i > contig_file_name 
 
-old_line_number=`wc -l sle638-hydrophiloidea.fasta`
-makeblastdb -in  sle638-hydrophiloidea.fasta -dbtype nucl
+old_line_number=`wc -l $i`
+makeblastdb -in $i -dbtype nucl
 
-blastn -db  sle638-hydrophiloidea.fasta -query  sle638-hydrophiloidea.fasta -evalue 0.001 -outfmt "6 qacc sacc pident length qlen qstart qend slen sstart send evalue bitscore" | awk '$1!=$2 {print $0}' > blast_output.txt
+blastn -db $i -query $i -evalue 0.001 -outfmt "6 qacc sacc pident length qlen qstart qend slen sstart send evalue bitscore" | awk '$1!=$2 {print $0}' > blast_output.txt
 
 Rscript blast_combine.R
 
-new_line_number=`wc -l sle638-hydrophiloidea.fasta`
+new_line_number=`wc -l $i`
 echo $old_line_number
 echo $new_line_number
 ```
