@@ -322,7 +322,7 @@ mv log sle_specific_run
 rm -rf iteration*
 ```
 
-I then map our total paired end reads to these final MITObim contigs and generate a final consensus using bwa, samtools, gatk and picard (you'll need to have these installed). Change all instances of sle117 in the following code to your own sample name. In the  FindCoveredIntervals I've chosen to only output sequence where the coverage was >= 4 reads (contigs will be split into multiple contigs if they dip below this). You can tweak this if you like.
+I then map our total paired end reads to these final MITObim contigs and generate a final consensus using bwa, samtools, gatk and picard (you'll need to have these installed). Change all instances of sle117 in the following code to your own sample name. In the  FindCoveredIntervals I've chosen to only output sequence where the coverage was >= 4 reads (contigs will be split into multiple contigs if they dip below this). You can tweak this if you like. In addition, if you are fishing out nuclear regions (e.g. 18S etc), you probably want to change the --maxNumHaplotypesInPopulation flag to 2.
 ``` 
 bwa index -a is sle117_final_mitobim.fasta 
 samtools faidx sle117_final_mitobim.fasta 
