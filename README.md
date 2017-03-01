@@ -251,6 +251,13 @@ rm temp;
 done;
 ```
 
+#Calculating levels of missing data
+The Rscript located in this repository (missing_data.R) will use your final concatenated phylip file to calculate levels of missing data (assuming missing data is represented by "?") by sample (% of sites in concatenated alignment where the sample is missing data)
+[TBD]
+
+If you would like to calculate this based on fasta files instead, check out:
+https://github.com/laninsky/Missing_data_for_UCE_loci
+
 #Extracting mitogenomes - option 1: Pulling-out-mitogenomes-from-UCE-data 
 Uses contig information from assembly step to generate mitogenomes: https://github.com/laninsky/Pulling-out-mitogenomes-from-UCE-data/blob/master/The_mito_pipeline.md
 
