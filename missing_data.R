@@ -1,4 +1,6 @@
-data <- as.matrix(read.table("C://Users//a499a400//Dropbox//beetles//stephen//50perc_w_missing_no_title.txt"))
+missing_data <- function(data_file) {
+
+data <- as.matrix(read.table(data_file))
 
 data <- data[-1,]
 
@@ -14,14 +16,20 @@ for (i in 1:(dim(data)[1])) {
    missing_by_sample <- rbind(missing_by_sample,tempmissing)
 }
 
+write.table(missing_by_sample,"missing_by_sample.txt",quote=FALSE,row.names=FALSE,col.names=FALSE)    
+    
 nomissing <- NULL
 
 for (i in 1:(dim(output)[2])) {
     nomissing <- c(nomissing,sum(output[1:(dim(output)[1]),i]=="?"))
 }
-
+    
 output <- c("number of missing samples","number of sites")
 for (i in 0:(dim(data)[1])) {
     tempoutput <- c(i,sum(nomissing==i))
     output <- rbind(output,tempoutput)
+}
+    
+write.table(output,"missing_by_site.txt",quote=FALSE,row.names=FALSE,col.names=FALSE)
+    
 }
