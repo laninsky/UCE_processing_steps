@@ -1,6 +1,6 @@
 library(stringr)
 
-key <- as.matrix(read.table("key",sep="\t",quote=""))
+key <- as.matrix(read.table("key",sep="\t"))
 
 fastafile <- as.matrix(read.table("name",sep="\t",quote=""))
 
