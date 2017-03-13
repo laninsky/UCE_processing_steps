@@ -252,8 +252,10 @@ done;
 ```
 
 #Calculating levels of missing data
-The Rscript located in this repository (missing_data.R) will use your final concatenated phylip file to calculate levels of missing data (assuming missing data is represented by "?") by sample (% of sites in concatenated alignment where the sample is missing data)
-[TBD]
+The Rscript located in this repository (missing_data.R) will use your final concatenated phylip file to calculate levels of missing data (assuming missing data is represented by "?") by sample (% of sites in concatenated alignment where the sample is missing data). To use it, copy the entire script into R, and then invoke it (in R) by:
+```
+missing_data("/path/to/phylip_file")
+```
 
 If you would like to calculate this based on fasta files instead, check out:
 https://github.com/laninsky/Missing_data_for_UCE_loci
