@@ -242,7 +242,7 @@ I've made some code that will take a tab-delimited file (called 'key') with the 
 After making sure the key file, your fasta files and the R-code are in the same folder. For the linux64.tbl2asn commands, you'll need ot have created a template file through sequin:
 ```
 # To submit sqn files with individuals grouped by locus
-for i in *locus.fasta;
+for i in *.fasta;
 do echo $i > name;
 Rscript genbankrename_bylocus.R;
 outputname=`echo $i | sed 's/.fasta//g'`;
@@ -252,7 +252,7 @@ rm temp;
 done;
 
 # To submit sqn files with loci grouped by individuals (currently - 24Mar2017 - what Genbank requests for UCE pop gen datasets)
-for i in *ind.fasta;
+for i in *.fasta;
 do echo $i > name;
 Rscript genbankrename_byind.R;
 outputname=`echo $i | sed 's/.fasta//g'`;
