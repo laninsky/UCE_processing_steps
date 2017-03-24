@@ -1,7 +1,7 @@
 # UCE_processing_steps
 My general workflow for processing UCE data with Phyluce v1.5. The code also makes extensive use of phyluce (https://github.com/faircloth-lab/phyluce) and cloudforest (https://github.com/ngcrawford/CloudForest), written by Brant Faircloth and Nick Crawford respectively (and the excellent instructions for Phyluce at http://phyluce.readthedocs.io/en/latest/assembly.html). How I dealt with data using previous Phyluce versions is in prev_phyluce_versions.md in this current directory.
 
-##Trimming and removing adaptor contamination
+## Trimming and removing adaptor contamination
 The first steps involve cleaning the reads and extracting the UCEs from the overall assembled contigs. One issue I have noticed with Illumiprocessor is that it expects samples to be named like the following {name}_L001_R1_001.fastq.gz and {name}_L001_R2_001.fastq.gz. Use the sed function to rename the files if need be. Check your cleaned reads through FastQC following the illumiprocessor step, because in same cases cutadapt may be needed to remove the adaptor sequence if trimmomatic doesn't get it all.
 ```
 for i in *R1_001.fastq.gz; do basename=`echo $i | sed 's/R1_001.fastq.gz//g'`; cutadapt -a AGATCGGAAGAGC -A AGATCGGAAGAGC -o ${basename}adapttrimmed_R1_001.fastq.gz -p ${basename}adapttrimmed_R2_001.fastq.gz $i ${basename}R2_001.fastq.gz -q 5,15 -m 25 >> cutadapt.log; done
@@ -21,7 +21,7 @@ for i in *; do gzip $i/*; done
 
 After this, the first thing I do is rename all the files to lower case for the sample names, as this causes issues when converting files to phylip. I conduct the intialsteps on our local linux computers (e.g. the complabs). Things that need to be in paths: Phyluce needs to be in python path, raxml needs to be in path.
 
-#Assembly
+## Assembly
 Running trinity assemblies using Phyluce 1.5 (http://phyluce.readthedocs.io/en/latest/assembly.html)
 ```
 phyluce_assembly_assemblo_trinity --config trinity.conf --output trinity-assemblies/ --clean --cores 12 --log-path logs
@@ -51,12 +51,12 @@ cd longest_isoform
 for i in ../*.fasta; do newname=`echo $i | sed 's/..\///g'`; /public/trinityrnaseq-2.2.0/util/misc/get_longest_isoform_seq_per_trinity_gene.pl $i > $newname; done
 ```
 
-#Matching probes to contigs
+## Matching probes to contigs
 ```
 phyluce_assembly_match_contigs_to_probes --contigs trinity-assemblies/contigs/longest_isoform/ --probes coleoptera-v1-master-probe-list-DUPE-SCREENED.fasta --output match_contig_to_probes_longest_iso --log-path logs
 ```
 
-#Generate data matrix
+## Generate data matrix
 Set up a conf file with the names for all your taxa:
 ```
 [dataset1]
@@ -79,26 +79,26 @@ Traceback (most recent call last):
 TypeError: object of type 'NoneType' has no len()
 ```
 
-#Extracting FASTA data
+## Extracting FASTA data
 ```
 phyluce_assembly_get_fastas_from_match_counts --contigs trinity-assemblies/contigs/longest_isoform/ --locus-db match_contig_to_probes_longest_iso/probe.matches.sqlite --match-count-output dataset1.conf --incomplete-matrix dataset1.incomplete --output incomplete_fasta --log-path logs
 ```
 
-#Aligning FASTA data
+## Aligning FASTA data
 ```
 phyluce_align_seqcap_align --fasta incomplete_fasta --output incomplete_mafft_nexus --taxa 64 --aligner mafft --cores 12 --incomplete-matrix --log-path logs
 
 phyluce_align_get_align_summary_data --alignments incomplete_mafft_nexus --cores 10 --log-path logs
 ```
 
-#Locus name removal
+## Locus name removal
 ```
 phyluce_align_remove_locus_name_from_nexus_lines --alignments incomplete_mafft_nexus --output incomplete_mafft_fasta_no_locus_names --cores 12 --output-format fasta --log-path logs
 
 phyluce_align_get_align_summary_data --alignments incomplete_mafft_fasta_no_locus_names --input-format fasta --cores 10 --log-path logs
 ```
 
-#Gblocks on aligned data
+## Gblocks on aligned data
 (script will not work on nexus file input, even if you specify input-format nexus. You want to run this before adding missing data designators or it will attempt to implement it across the entire dataset, even across taxa the locus is not found in)
 ```
 phyluce_align_get_gblocks_trimmed_alignments_from_untrimmed --alignments incomplete_mafft_fasta_no_locus_names --output incomplete_mafft_gblocks --output-format nexus --b2 0.5 --log-path logs --cores 10
@@ -106,19 +106,19 @@ phyluce_align_get_gblocks_trimmed_alignments_from_untrimmed --alignments incompl
 phyluce_align_get_align_summary_data --alignments incomplete_mafft_gblocks --cores 10 --log-path logs
 ```
 
-#Getting 50% complete data matrix
+## Getting 50% complete data matrix
 ```
 phyluce_align_get_only_loci_with_min_taxa --alignments incomplete_mafft_gblocks --taxa 64 --percent 0.5 --output 50perc_nexus --cores 12 --log-path logs
 ```
 
-#Adding missing data designators 
+## Adding missing data designators 
 ```
 phyluce_align_add_missing_data_designators --alignments 50perc_nexus --output 50perc_w_missing --match-count-output dataset1.conf --incomplete-matrix dataset1.incomplete --log-path logs --cores 10 --min-taxa 32 --verbatim --no-check-missing --log-path logs
 
 phyluce_align_get_align_summary_data --alignments 50perc_w_missing --cores 10 --log-path logs
 ```
 
-#Running RAxML on the concatenated dataset (without partitioning):
+## Running RAxML on the concatenated dataset (without partitioning):
 ```
 phyluce_align_format_nexus_files_for_raxml --alignments 50perc_w_missing --output concat_phylip
 
@@ -130,7 +130,7 @@ raxmlHPC-PTHREADS-SSE3 -s 50perc_w_missing.phylip -n run2 -m GTRCATI -f a -N 100
 
 ```
 
-#Making phylip alignments so we can use RAxML to estimate each of the gene trees
+## Making phylip alignments so we can use RAxML to estimate each of the gene trees
 ```
 phyluce_align_convert_one_align_to_another --alignments 50perc_w_missing --output 50perc_w_missing_phylip --input-format nexus --output-format phylip --cores 4 --log-path logs
 
@@ -145,7 +145,7 @@ done;
 cd ..
 ```
 
-#Running RAxML to get the genetrees
+## Running RAxML to get the genetrees
 I've had problems with phyluce's method for doing this, so this is free-hand code for doing this. After you have made your inputgenetree.tre, follow the code for "Getting the ASTRID and ASTRAL species trees based off gene trees" to generate species trees off your gene trees.
 ```
 mkdir raxml_genetrees
@@ -166,7 +166,7 @@ do cat $i/RAxML_bestTree.best >> inputgenetrees.tre
 done;
 ```
 
-#Running Cloudforest to get genetrees and models of substitution per locus
+## Running Cloudforest to get genetrees and models of substitution per locus
 ```
 #cloudforest needs alignments to be ~9 bp longer than the number of bp in the alignment minus the number taxa in the alignment
 cp -r 50perc_w_missing_phylip cloudforest_phylip
@@ -191,7 +191,7 @@ mkdir cloudforest_genetrees
 python2 /usr/local/lib/python2.7/dist-packages/cloudforest/cloudforest_mpi.py cloudforest_phylip cloudforest_genetrees genetrees /public/PhyML-3.1/PhyML-3.1_linux64 --cores 5 --parallelism multiprocessing >> logs/cloudforest.log
 ```
 
-#Partitioning loci by substitution model for concatenated RAxML runs, using cloudforest partitions
+## Partitioning loci by substitution model for concatenated RAxML runs, using cloudforest partitions
 ```
 #cd into the genetrees folder. The following Phyluce code gets output for each model
 phyluce_genetrees_split_models_from_genetrees --genetrees genetrees.tre --output output_models.txt
@@ -208,14 +208,14 @@ raxmlHPC-PTHREADS-SSE3 -s concatphylip.phylip -q partitions.txt -n run1 -m GTRCA
 raxmlHPC-PTHREADS-SSE3 -s concatphylip.phylip -q partitions.txt -n run2 -m GTRCATI -f a -N 100 -x $RANDOM -p $RANDOM -T 4
 ```
 
-#Extracting genetrees from cloudforest_genetrees output
+## Extracting genetrees from cloudforest_genetrees output
 ```
 #Inside the cloudforest_genetrees folder, getting just the genetrees so that the species tree gene tree methods can be run below
 awk '{print $5}' genetrees.tre > inputgenetrees.tre
 
 ```
 
-#Getting the ASTRID and ASTRAL species trees based off gene trees
+## Getting the ASTRID and ASTRAL species trees based off gene trees
 
 Do this for RAxML and cloudforest gene trees - navigate into each of the gene tree folders, and then run the following code
 ```
@@ -227,10 +227,10 @@ java -jar /public/Astral/astral.4.10.12.jar -i inputgenetrees.tre -o astral.tre
 java -jar /public/Astral/astral.4.10.12.jar -q astrid.tre -i inputgenetrees.tre -o astrid_posterior.tre
 ```
 
-#Running SVDquartets
+## Running SVDquartets
 https://github.com/laninsky/running_SVDquartets
 
-#Submitting to Genbank
+## Submitting to Genbank
 I've made some code that will take a tab-delimited file (called 'key') with the sample names as you have specified them in your UCE fasta files (1st column), as well as the R paste function for what you would like the genbank specifiers to be (2nd column). If you shove it in a folder full of fasta files labelled for each uce locus, it will use the name of the uce-loci in place of 'ucelocus' in the tab-delimited file to rename and print out the fasta sequences for each individual that has data (assuming missing is coded as "-" and "N").
 
 ```
@@ -264,7 +264,7 @@ do outputname=`echo $i | sed 's/_ind.fasta//g'`;
 done;
 ```
 
-#Calculating levels of missing data
+## Calculating levels of missing data
 The Rscript located in this repository (missing_data.R) will use your final concatenated phylip file to calculate levels of missing data (assuming missing data is represented by "?") by sample (% of sites in concatenated alignment where the sample is missing data). To use it, copy the entire script into R, and then invoke it (in R) by:
 ```
 missing_data("/path/to/phylip_file")
@@ -273,10 +273,10 @@ missing_data("/path/to/phylip_file")
 If you would like to calculate this based on fasta files instead, check out:
 https://github.com/laninsky/Missing_data_for_UCE_loci
 
-#Extracting mitogenomes - option 1: Pulling-out-mitogenomes-from-UCE-data 
+## Extracting mitogenomes - option 1: Pulling-out-mitogenomes-from-UCE-data 
 Uses contig information from assembly step to generate mitogenomes: https://github.com/laninsky/Pulling-out-mitogenomes-from-UCE-data/blob/master/The_mito_pipeline.md
 
-#Extracting mitogenomes - option 2: MITObim
+## Extracting mitogenomes - option 2: MITObim
 Uses unassembled reads to generate mitogenomes. Install MIRA and MITObim: https://github.com/chrishah/MITObim
 
 Interleave F and R reads (using trimmed reads from after illumiprocessor/cut-adapt stage)
