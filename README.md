@@ -231,7 +231,7 @@ java -jar /public/Astral/astral.4.10.12.jar -q astrid.tre -i inputgenetrees.tre 
 https://github.com/laninsky/running_SVDquartets
 
 #Submitting to Genbank
-I've made some code that will take a tab-delimited file (called 'key') with the sample names as you have specified them in your UCE fasta files (1st column), as well as the R paste function for what you would like the genbank specifiers to be (2nd column). If you shove it in a folder full of fasta files labelled for each uce locus, it will use the name of the uce-loci in place of 'ucelocus' in the tab-delimited file to rename and print out the fasta sequences for each individual that has data (assuming missing is coded as "_").
+I've made some code that will take a tab-delimited file (called 'key') with the sample names as you have specified them in your UCE fasta files (1st column), as well as the R paste function for what you would like the genbank specifiers to be (2nd column). If you shove it in a folder full of fasta files labelled for each uce locus, it will use the name of the uce-loci in place of 'ucelocus' in the tab-delimited file to rename and print out the fasta sequences for each individual that has data (assuming missing is coded as "-" and "N").
 
 ```
 >kaloula_baleata_jam3573	paste(">kaloula_baleata_jam3573","_",ucelocus," [organism=Kaloula baleata] [molecule=DNA] [mol_type=genomic DNA] [specimen_voucher=JAM3573] [note=Sampling location: Sulawesi] Kaloula baleata isolate JAM3573 ","ultra conserved element locus ",ucelocus," genomic sequence",sep="")
@@ -239,7 +239,7 @@ I've made some code that will take a tab-delimited file (called 'key') with the 
 >kaloula_baleata_rmb2401	paste(">kaloula_baleata_rmb2401","_",ucelocus," [organism=Kaloula baleata] [molecule=DNA] [mol_type=genomic DNA] [specimen_voucher=TNHC67086] [note=Sampling location: Java] Kaloula baleata isolate TNHC67086 ","ultra conserved element locus ",ucelocus," genomic sequence",sep="")
 ```
 
-After making sure the key file, your fasta files and the R-script(s) are in the same folder. For the linux64.tbl2asn commands, you'll need ot have created a template file through sequin:
+After making sure the key file, your fasta files and the R-script(s) are in the same folder. For the linux64.tbl2asn commands, you'll need to have created a template file through sequin which is also in that folder:
 ```
 template=whatever_your_template_file_is_called
 
