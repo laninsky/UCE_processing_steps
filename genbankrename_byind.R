@@ -46,4 +46,8 @@ removingmissing[j,1] <- gsub("-","",removingmissing[j,1])
 
 outputsequence <- rbind(outputsequence,removingmissing)
 
-write.table(outputsequence,"temp",quote=FALSE,row.names=FALSE,col.names=FALSE)
+for (j in seq(2, dim(outputsequence)[1],2)) {
+  samplename <- paste(gsub(">","",(unlist(strsplit(outputsequence[(j-1),1],ucelocus))[1])),"ind.fasta",sep="")
+  samplesubset <- outputsequence[(j-1):j,1]
+  write.table(samplesubset,samplename,quote=FALSE,row.names=FALSE,col.names=FALSE,append=TRUE)
+}
