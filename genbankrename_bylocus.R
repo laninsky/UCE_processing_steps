@@ -16,7 +16,7 @@ tempfile[(which(tempfile[,1]==key[j,1])),1] <- eval(parse(text=key[j,2]))
 linestoditch <- matrix(FALSE,ncol=1,nrow=(dim(tempfile)[1]))
 
 for (j in seq(2, dim(tempfile)[1],2)) {
-linestoditch[j,1] <- nchar(gsub("-","",tempfile[j,1]))==0
+linestoditch[j,1] <- (nchar(gsub("-","",tempfile[j,1]))+nchar(gsub("N","",tempfile[j,1])))<50
 if (linestoditch[j,1]==TRUE) {
 linestoditch[(j-1),1] <- TRUE
 }
