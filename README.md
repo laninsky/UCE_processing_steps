@@ -259,10 +259,8 @@ do echo $i > name;
 Rscript genbankrename_byind.R;
 done;
 for i in *_ind.fasta;
-outputname=`echo $i | sed 's/_ind.fasta//g'`;
-/public/linux64.tbl2asn -i temp -t $template -o $outputname.sqn -s;
-rm name;
-rm temp;
+do outputname=`echo $i | sed 's/_ind.fasta//g'`;
+/public/linux64.tbl2asn -i $i -t $template -o $outputname.sqn -s;
 done;
 ```
 
