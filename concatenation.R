@@ -66,4 +66,15 @@ for (i in 2:no_of_files) {
     }
   }
 }
-  
+
+phylip <- cbind(final_fasta[(seq(1,(dim(final_fasta)[1]),2)),1],final_fasta[(seq(2,(dim(final_fasta)[1]),2)),1])
+phylip[,1] <- gsub(">","",phylip[,1],fixed=TRUE)
+first_phylip_line <- c(dim(phylip)[1],final_partition[(dim(final_partition)[1]),3])
+phylip <- rbind(first_phylip_line,phylip)
+
+write.table(final_fasta,"concatenated_fasta.fasta",quote=FALSE, row.names=FALSE,col.names=FALSE)
+write.table(phylip,"concatenated_phylip.phylip",quote=FALSE, row.names=FALSE,col.names=FALSE)
+write.table(final_partition,"partition_file.txt",quote=FALSE, row.names=FALSE,col.names=FALSE)
+
+
+
