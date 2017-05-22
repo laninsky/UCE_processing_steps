@@ -44,7 +44,7 @@ for (i in 2:no_of_files) {
   }
 
   to_write_final <- rbind(to_write_final,toupper(sequencepaste))
-  final_partition <- rbind(final_partition,c(file_names[i,1],(as.numeric(final_partition[(i-1),3])+1),(as.numeric(final_partition[(i-1),3])+nchar(final_fasta[2,1]))))
+  final_partition <- rbind(final_partition,c(file_names[i,1],(as.numeric(final_partition[(i-1),3])+1),(as.numeric(final_partition[(i-1),3])+nchar(to_write_final[2,1]))))
   nchar_so_far <- nchar(final_fasta[2,1])
   
   for (j in seq(1,dim(to_write_final)[1],2)) {
@@ -58,12 +58,12 @@ for (i in 2:no_of_files) {
     }
   }  
   
-  
-  
-
-    
-    
-    
-    
+  for (j in seq(2,dim(final_fasta)[1],2)) {
+    if(nchar(final_fasta[j,1])<as.numeric(final_partition[(dim(final_partition)[1]),3])) {
+      no_new_chars <- nchar(to_write_final[2,1])
+      tempseq <- paste(rep("-",no_new_chars),collapse="")
+      final_fasta[j,1] <- paste(final_fasta[j,1],tempseq,sep="")
+    }
+  }
 }
   
