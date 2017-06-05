@@ -36,6 +36,8 @@ for (i in list.files(pattern=fasta_suffix)) {
               endpos <- as.numeric(temp[2])
               if (temp[3]=="rRNA") {
                   genename <- unlist(strsplit(feature[j+1],"product\t"))[2]
+                  genename <- gsub("-.*","",genename,fixed=FALSE)
+                  genename <- paste(genename,"RNA.fasta",sep="")
                   if (startpos < 0 ) {
                     geneseq <- paste(fastaseq[0:endpos],collapse="")
                     Ns <- paste(rep("N",(0-startpos)),collapse="")
