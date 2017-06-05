@@ -37,6 +37,22 @@ for (i in list.files(pattern=fasta_suffix)) {
           } else {
              if ((length(grep("gene",feature[j])))>0) {
                  genename <- unlist(strsplit(feature[j],"gene\t"))[2]
-      
-
-    
+                 genename <- gsub("(","",genename,fixed=TRUE)
+                 genename <- gsub(")","",genename,fixed=TRUE)
+                 genename <- gsub("-.*","",genename,fixed=FALSE)
+                 genename <- gsub("_.*","",genename,fixed=FALSE)
+                 genename <- paste(genename,".fasta",sep="")
+                 if (startpos < 0 ) {
+                    geneseq <- paste(fastaseq[0:endpos],collapse="")
+                    Ns <- paste(rep("N",(0-startpos)),collapse="")
+                    geneseq <- paste(Ns,geneseq,sep="")                     
+                 } else {  
+                    geneseq <- paste(fastaseq[startpos:endpos],collapse="")
+                 }    
+                 write.table(fastaheader,genename,quote=FALSE, row.names=FALSE,col.names=FALSE,append=TRUE)
+                 write.table(geneseq,genename,quote=FALSE, row.names=FALSE,col.names=FALSE,append=TRUE)
+              }
+           }
+       }
+    }
+ }
