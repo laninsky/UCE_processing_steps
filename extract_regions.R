@@ -48,7 +48,17 @@ for (i in list.files(pattern=fasta_suffix)) {
                     geneseq <- paste(Ns,geneseq,sep="")                     
                  } else {  
                     geneseq <- paste(fastaseq[startpos:endpos],collapse="")
-                 } 
+                 }
+                 if (startpos > endpos) {
+                     genename <- gsub("A","1",genename,fixed=TRUE)
+                     genename <- gsub("C","2",genename,fixed=TRUE)
+                     genename <- gsub("G","3",genename,fixed=TRUE)
+                     genename <- gsub("T","4",genename,fixed=TRUE)
+                     genename <- gsub("4","A",genename,fixed=TRUE)
+                     genename <- gsub("3","C",genename,fixed=TRUE)
+                     genename <- gsub("2","G",genename,fixed=TRUE)
+                     genename <- gsub("1","T",genename,fixed=TRUE)
+                 }
                  write.table(fastaheader,genename,quote=FALSE, row.names=FALSE,col.names=FALSE,append=TRUE)
                  write.table(geneseq,genename,quote=FALSE, row.names=FALSE,col.names=FALSE,append=TRUE)            
               }              
@@ -66,7 +76,17 @@ for (i in list.files(pattern=fasta_suffix)) {
                     geneseq <- paste(Ns,geneseq,sep="")                     
                  } else {  
                     geneseq <- paste(fastaseq[startpos:endpos],collapse="")
-                 }    
+                 }
+                 if (startpos > endpos) {
+                     genename <- gsub("A","1",genename,fixed=TRUE)
+                     genename <- gsub("C","2",genename,fixed=TRUE)
+                     genename <- gsub("G","3",genename,fixed=TRUE)
+                     genename <- gsub("T","4",genename,fixed=TRUE)
+                     genename <- gsub("4","A",genename,fixed=TRUE)
+                     genename <- gsub("3","C",genename,fixed=TRUE)
+                     genename <- gsub("2","G",genename,fixed=TRUE)
+                     genename <- gsub("1","T",genename,fixed=TRUE)
+                 }
                  write.table(fastaheader,genename,quote=FALSE, row.names=FALSE,col.names=FALSE,append=TRUE)
                  write.table(geneseq,genename,quote=FALSE, row.names=FALSE,col.names=FALSE,append=TRUE)
               }
