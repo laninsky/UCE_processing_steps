@@ -31,7 +31,12 @@ for (i in list.files(pattern=fasta_suffix)) {
           fastaseq <- unlist(strsplit(fasta[(which_fasta+1),1],""))
       } else {
           temp <- unlist(strsplit(feature[j],"\t"))
-          if (suppressWarnings(as.numeric(temp[1])*as.numeric(temp[3]))
+          if (!(is.na(suppressWarnings(as.numeric(temp[1])*as.numeric(temp[2]))))) {
+              startpos <- as.numeric(temp[1])
+              endpos <- as.numeric(temp[2])
+          } else {
+             if ((length(grep("gene",feature[j])))>0) {
+                 genename <- unlist(strsplit(feature[j],"gene\t"))[2]
       
 
     
