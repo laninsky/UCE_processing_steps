@@ -29,6 +29,10 @@ for (i in list.files(pattern=fasta_suffix)) {
           which_fasta <- which(fasta[,1]==gsub("Feature ","",feature[j]))
           fastaheader <- fasta[which_fasta,1]
           fastaseq <- unlist(strsplit(fasta[(which_fasta+1),1],""))
+          if (is.null(fastaseq)) {
+              print(i)
+              stop("names in fasta file and feature table do not match up")
+          }
       } else {
           temp <- unlist(strsplit(feature[j],"\t"))
           if (!(is.na(suppressWarnings(as.numeric(temp[1])*as.numeric(temp[2]))))) {
