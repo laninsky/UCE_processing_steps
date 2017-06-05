@@ -1,6 +1,6 @@
 # Expect the feature table to be tab-delimited
 
-working_dir <- "C:\\Users\\Alana\\Dropbox\\beetles\\mitogenomes_18S_28S\\mitogenome\\final"
+working_dir <- "C:\\Users\\a499a400\\Dropbox\\beetles\\mitogenomes_18S_28S\\mitogenome\\final"
 fasta_suffix <- ".fasta"
 feature_suffix <- "_feature_table.txt"
 
@@ -34,6 +34,18 @@ for (i in list.files(pattern=fasta_suffix)) {
           if (!(is.na(suppressWarnings(as.numeric(temp[1])*as.numeric(temp[2]))))) {
               startpos <- as.numeric(temp[1])
               endpos <- as.numeric(temp[2])
+              if (temp[3]=="rRNA") {
+                  genename <- unlist(strsplit(feature[j+1],"product\t"))[2]
+                  if (startpos < 0 ) {
+                    geneseq <- paste(fastaseq[0:endpos],collapse="")
+                    Ns <- paste(rep("N",(0-startpos)),collapse="")
+                    geneseq <- paste(Ns,geneseq,sep="")                     
+                 } else {  
+                    geneseq <- paste(fastaseq[startpos:endpos],collapse="")
+                 } 
+                 write.table(fastaheader,genename,quote=FALSE, row.names=FALSE,col.names=FALSE,append=TRUE)
+                 write.table(geneseq,genename,quote=FALSE, row.names=FALSE,col.names=FALSE,append=TRUE)            
+              }              
           } else {
              if ((length(grep("gene",feature[j])))>0) {
                  genename <- unlist(strsplit(feature[j],"gene\t"))[2]
