@@ -1,4 +1,4 @@
-# 
+# Expect the feature table to be tab-delimited
 
 working_dir <- "C:\\Users\\Alana\\Dropbox\\beetles\\mitogenomes_18S_28S\\mitogenome\\final"
 fasta_suffix <- ".fasta"
@@ -21,3 +21,7 @@ for (i in list.files(pattern=fasta_suffix)) {
       }
     }
     fasta <- rbind(fasta,toupper(sequencepaste))
+    
+    featurename <- gsub(fasta_suffix,feature_suffix,i,fixed=TRUE)
+    feature <- readLines(featurename)
+    
