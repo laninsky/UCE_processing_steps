@@ -8,13 +8,13 @@ setwd(working_dir)
 
 for (i in list.files(pattern=fasta_suffix)) {
     temp_fasta <-  read.table(i,header=FALSE,stringsAsFactors=FALSE,sep="\t")
-    fasta <- temp_fasta[1,1]
+    fasta <- gsub(":","",temp_fasta[1,1],fixed=TRUE)
     sequencepaste <- NULL
     for (j in 2:(dim(temp_fasta)[1])) {
       if ((length(grep(">",temp_fasta[j,1])))>0) {
       to_write <- toupper(sequencepaste)
       fasta <- rbind(fasta,to_write)
-      fasta <- rbind(fasta,temp_fasta[j,1])
+      fasta <- rbind(fasta,gsub(":","",temp_fasta[j,1],fixed=TRUE))
       sequencepaste <- NULL
       } else {
       sequencepaste <- paste(sequencepaste,temp_fasta[j,1],sep="")
@@ -24,4 +24,14 @@ for (i in list.files(pattern=fasta_suffix)) {
     
     featurename <- gsub(fasta_suffix,feature_suffix,i,fixed=TRUE)
     feature <- readLines(featurename)
+    for (j in 1:(length(feature))) {
+      if ((length(grep(">",feature[j])))>0) {
+          which_fasta <- which(fasta[,1]==gsub("Feature ","",feature[j]))
+          fastaheader <- fasta[which_fasta,1]
+          fastaseq <- unlist(strsplit(fasta[(which_fasta+1),1],""))
+      } else {
+          temp <- unlist(strsplit(feature[j],"\t"))
+          if (suppressWarnings(as.numeric(temp[1])*as.numeric(temp[3]))
+      
+
     
