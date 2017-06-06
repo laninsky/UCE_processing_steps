@@ -1,6 +1,6 @@
 # Expect the feature table to be tab-delimited
 
-working_dir <- "C:\\Users\\a499a400\\Dropbox\\beetles\\mitogenomes_18S_28S\\mitogenome\\final"
+working_dir <- "C:\\Users\\Alana\\Dropbox\\beetles\\mitogenomes_18S_28S\\mitogenome\\final"
 fasta_suffix <- ".fasta"
 feature_suffix <- "_feature_table.txt"
 
