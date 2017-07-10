@@ -272,3 +272,6 @@ missing_data("/path/to/phylip_file")
 
 If you would like to calculate this based on fasta files instead, check out:
 https://github.com/laninsky/Missing_data_for_UCE_loci
+
+## Assembling mitogenomes and other off-target regions
+Check out the folder 'extracting_non_UCEs'
