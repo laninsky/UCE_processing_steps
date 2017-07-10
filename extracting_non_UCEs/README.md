@@ -91,9 +91,10 @@ mv temp.coverage coverage.txt
 rm temp*
 ```
 
-After verifying that the fragments are mitochondrial through BLAST, I annotate them via MITOS: http://mitos.bioinf.uni-leipzig.de/
-
-For 18S-28S, I used ITSX:
+After verifying that the fragments were on target through BLAST, and replacing any spaces in the fasta header with undescores:
+-- I annotated mitogenomes via MITOS: http://mitos.bioinf.uni-leipzig.de/
+-- and 18S-28S via ITSX:
 ```
-
+for i in *.fasta; basename=`echo $i | sed 's/.fasta//g'`; do ITSx --allow_single_domain --preserve --save_regions  all -i $i -o $basename; done 
 ```
+\\\sed -ir 's|\(>[0-9]\)\(_sle\)\(.*\)|\2|g' test.fas
