@@ -83,9 +83,8 @@ samtools index tempsortmarked.bam
 gatk DepthOfCoverage -R sle117_final_mitobim.fasta -I temp_realigned_reads.bam -o temp.coverage
 
 gatk HaplotypeCaller -R sle117_final_mitobim.fasta -I tempsortmarked.bam -stand-call-conf 30 -O temp_raw_variants.vcf --max-num-haplotypes-in-population 1
-gatk ReadBackedPhasing -R sle117_final_mitobim.fasta -I tempsortmarked.bam  --variant temp_raw_variants.vcf -O temp_phased_SNPs.vcf
-gatk FindCoveredIntervals -R sle117_final_mitobim.fasta -I tempsortmarked.bam -cov 4 -O temp_covered.list
-gatk FastaAlternateReferenceMaker -V temp_phased_SNPs.vcf -R sle117_final_mitobim.fasta -L temp_covered.list -O sle117_final_mapped.fasta
+/public/jdk1.8.0_112/bin/java -jar /public/GenomeAnalysisTK.jar -T FindCoveredIntervals -R sle117_final_mitobim.fasta -I tempsortmarked.bam -cov 4 -o temp_covered.list
+/public/jdk1.8.0_112/bin/java -jar /public/GenomeAnalysisTK.jar -T FastaAlternateReferenceMaker -V temp_phased_SNPs.vcf -R sle117_final_mitobim.fasta -L temp_covered.list -o sle117_final_mapped.fasta
 mv temp.coverage coverage.txt
 rm temp*
 ```
