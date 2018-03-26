@@ -82,7 +82,7 @@ bwa mem sle117_final_mitobim.fasta sle117-READ1.fastq sle117-READ2.fastq > temp.
 samtools index tempsortmarked.bam
 gatk DepthOfCoverage -R sle117_final_mitobim.fasta -I temp_realigned_reads.bam -o temp.coverage
 
-gatk HaplotypeCaller -R sle117_final_mitobim.fasta -I temp_realigned_reads.bam --genotyping_mode DISCOVERY -stand_call_conf 30 -o temp_raw_variants.vcf --maxNumHaplotypesInPopulation 1
+gatk HaplotypeCaller -R sle117_final_mitobim.fasta -I temp_realigned_reads.bam -stand_call_conf 30 -o temp_raw_variants.vcf --maxNumHaplotypesInPopulation 1
 gatk ReadBackedPhasing -R sle117_final_mitobim.fasta -I temp_realigned_reads.bam  --variant temp_raw_variants.vcf -o temp_phased_SNPs.vcf
 gatk FindCoveredIntervals -R sle117_final_mitobim.fasta -I temp_realigned_reads.bam -cov 4 -o temp_covered.list
 gatk FastaAlternateReferenceMaker -V temp_phased_SNPs.vcf -R sle117_final_mitobim.fasta -L temp_covered.list -o sle117_final_mapped.fasta
