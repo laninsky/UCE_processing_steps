@@ -113,7 +113,13 @@ rm temp*
 After verifying that the fragments were on target through BLAST, and replacing any spaces in the fasta header with undescores:
 -- I annotated mitogenomes via MITOS: http://mitos.bioinf.uni-leipzig.de/
 -- and 18S-28S via ITSX:
+
+# Note about applying to amplicon sequencing
+Please see the discussion about potential problems with applying this code to amplicon sequencing mentioned at:
+https://github.com/laninsky/direct_mito_sequencing/blob/master/4_filtering_fasta_on_pileup/README.md
+
+
 ```
 for i in *.fasta; basename=`echo $i | sed 's/.fasta//g'`; do ITSx --allow_single_domain --preserve --save_regions  all -i $i -o $basename; done 
-```
 \\\sed -ir 's|\(>[0-9]\)\(_sle\)\(.*\)|\2|g' test.fas
+```
