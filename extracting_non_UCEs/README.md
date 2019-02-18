@@ -69,7 +69,7 @@ mv log sle_specific_run
 rm -rf iteration*
 ```
 
-I then map our total paired end reads to these final MITObim contigs and generate a final consensus using bwa, samtools, gatk and picard (you'll need to have these installed). I do this separately for each locus I am trying to fish out, but if they had the same ploidy (i.e. all were nuclear) you could do them at the same time. Change all instances of sle117 in the following code to your own sample name. In the  FindCoveredIntervals I've chosen to only output sequence where the coverage was >= 4 reads (contigs will be split into multiple contigs if they dip below this). You can tweak this if you like. In addition, if you are fishing out nuclear regions (e.g. 18S etc), you probably want to change the --maxNumHaplotypesInPopulation flag to 4 or more.
+I then map our total paired end reads to these final MITObim contigs and generate a final consensus using bwa, samtools, gatk and picard (you'll need to have these installed). I do this separately for each locus I am trying to fish out, but if they had the same ploidy (i.e. all were nuclear) you could do them at the same time. Change all instances of sle117 in the following code to your own sample name. In the  FindCoveredIntervals I've chosen to only output sequence where the coverage was >= 4 reads (contigs will be split into multiple contigs if they dip below this). You can tweak this if you like. In addition, if you are fishing out nuclear regions (e.g. 18S etc), you probably want to change the --maxNumHaplotypesInPopulation flag to 2 or more.
 
 ``` 
 bwa index -a is sle117_final_mitobim.fasta 
@@ -85,7 +85,7 @@ samtools index tempsortmarked.bam
 # gatk commands that begin with the java call
 /public/jdk1.8.0_112/bin/java -jar /public/GenomeAnalysisTK.jar -T DepthOfCoverage -R sle117_final_mitobim.fasta -I tempsortmarked.bam -o temp.coverage
 
-gatk HaplotypeCaller -R sle117_final_mitobim.fasta -I tempsortmarked.bam -stand-call-conf 30 -O temp_raw_variants.vcf --max-num-haplotypes-in-population 2
+gatk HaplotypeCaller -R sle117_final_mitobim.fasta -I tempsortmarked.bam -stand-call-conf 30 -O temp_raw_variants.vcf --max-num-haplotypes-in-population 1
 /public/jdk1.8.0_112/bin/java -jar /public/GenomeAnalysisTK.jar -T FindCoveredIntervals -R sle117_final_mitobim.fasta -I tempsortmarked.bam -cov 4 -o temp_covered.list
 /public/jdk1.8.0_112/bin/java -jar /public/GenomeAnalysisTK.jar -T FastaAlternateReferenceMaker -V temp_phased_SNPs.vcf -R sle117_final_mitobim.fasta -L temp_covered.list -o sle117_final_mapped.fasta
 mv temp.coverage coverage.txt
