@@ -80,7 +80,10 @@ bwa mem sle117_final_mitobim.fasta sle117-READ1.fastq sle117-READ2.fastq > temp.
 /public/jdk1.8.0_112/bin/java -jar /public/picard.jar MarkDuplicates MAX_FILE_HANDLES=1000 I=tempsort.sam O=tempsortmarked.sam M=temp.metrics AS=TRUE
 /public/jdk1.8.0_112/bin/java -jar /public/picard.jar SamFormatConverter I=tempsortmarked.sam O=tempsortmarked.bam
 samtools index tempsortmarked.bam
-gatk DepthOfCoverage -R sle117_final_mitobim.fasta -I temp_realigned_reads.bam -o temp.coverage
+
+# gatk 4.0 has not ported depthofcoverage or some other needed tools, so you have to jump over to 3.8 for 
+# gatk commands that begin with the java call
+/public/jdk1.8.0_112/bin/java -jar /public/GenomeAnalysisTK.jar -T DepthOfCoverage -R sle117_final_mitobim.fasta -I tempsortmarked.bam -o temp.coverage
 
 gatk HaplotypeCaller -R sle117_final_mitobim.fasta -I tempsortmarked.bam -stand-call-conf 30 -O temp_raw_variants.vcf --max-num-haplotypes-in-population 2
 /public/jdk1.8.0_112/bin/java -jar /public/GenomeAnalysisTK.jar -T FindCoveredIntervals -R sle117_final_mitobim.fasta -I tempsortmarked.bam -cov 4 -o temp_covered.list
