@@ -219,6 +219,13 @@ awk '{print $5}' genetrees.tre > inputgenetrees.tre
 
 ```
 
+## Obtaining \*.nex file for use with https://github.com/Tagliacollo/PFinderUCE-SWSC-EN
+Alternately, instead of not partitioning, or partitioning on cloudforest models, you might want to use PFinderUCE-SWSC-EN. In this case, the data needs to be partitioned by locus. This script should be run in your phylip_w_missing folder (e.g. every taxon should be present for every UCE). Once inside that folder:
+```
+Rscript partition_by_locus.R
+```
+This will output a file `partitioned_by_locus.nex
+
 ## Getting the ASTRID and ASTRAL species trees based off gene trees
 
 Do this for RAxML and cloudforest gene trees - navigate into each of the gene tree folders, and then run the following code
