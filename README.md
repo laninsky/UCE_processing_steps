@@ -224,7 +224,7 @@ Alternately, instead of not partitioning, or partitioning on cloudforest models,
 ```
 Rscript partition_by_locus.R
 ```
-This will output a file `partitioned_by_locus.nex
+This will output a file `partitioned_by_locus.nex`
 
 ## Getting the ASTRID and ASTRAL species trees based off gene trees
 
