@@ -10,6 +10,7 @@ notaxa <- as.numeric(unlist(strsplit(temp[1],"\\s"))[2])
 finalnameseq <- matrix(ncol=2,nrow=notaxa)
 
 firstrows <- unlist(strsplit(temp[2:(1+notaxa)],"\\s"))
+firstrows <- firstrows[-which(firstrows=="")]
 finalnameseq[,1] <- unlist(strsplit(firstrows,"\\s"))[seq(1,length(firstrows),round(length(firstrows)/notaxa))]
 restofseq <- gsub("\\s","",unlist(strsplit(firstrows,"\\s"))[-seq(1,length(firstrows),round(length(firstrows)/notaxa))])
 
@@ -39,6 +40,7 @@ for (j in listofphylipfiles[-1]) {
   locusname <- gsub("-","_",gsub(".phy.*","",j))
   # Extracting the sequence
   firstrows <- unlist(strsplit(temp[2:(1+notaxa)],"\\s"))
+  firstrows <- firstrows[-which(firstrows=="")]
   tempnames <- unlist(strsplit(firstrows,"\\s"))[seq(1,length(firstrows),round(length(firstrows)/notaxa))]
   restofseq <- gsub("\\s","",unlist(strsplit(firstrows,"\\s"))[-seq(1,length(firstrows),round(length(firstrows)/notaxa))])
   # Getting the start position for this locus
