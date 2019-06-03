@@ -10,7 +10,9 @@ notaxa <- as.numeric(unlist(strsplit(temp[1],"\\s"))[2])
 finalnameseq <- matrix(ncol=2,nrow=notaxa)
 
 firstrows <- unlist(strsplit(temp[2:(1+notaxa)],"\\s"))
-firstrows <- firstrows[-which(firstrows=="")]
+if (length(which(firstrows==""))>0) {
+  firstrows <- firstrows[-which(firstrows=="")]
+}
 finalnameseq[,1] <- unlist(strsplit(firstrows,"\\s"))[seq(1,length(firstrows),round(length(firstrows)/notaxa))]
 restofseq <- gsub("\\s","",unlist(strsplit(firstrows,"\\s"))[-seq(1,length(firstrows),round(length(firstrows)/notaxa))])
 
@@ -19,13 +21,19 @@ for (i in 1:dim(finalnameseq)[1]) {
     (1+(i-1)*length(restofseq)/notaxa):((1+(i-1)*length(restofseq))/notaxa+length(restofseq)/notaxa)],collapse="")
 }
 
-temp <- temp[-which(temp=="")]
+if (length(which(temp==""))>0) {
+  temp <- temp[-which(temp=="")]
+}
+
 temp <- temp[-(1:(notaxa+1))]
 temp <- gsub("\\s","",temp)
 names(temp) <- rep(finalnameseq[,1],length(temp)/notaxa)
 
+temptempseq <- matrix(nrow=dim(finalnameseq)[1])
+
 for (i in 1:dim(finalnameseq)[1]) {
-  finalnameseq[i,2] <- paste(finalnameseq[i,2],temp[which(names(temp)==finalnameseq[i,1])],collapse="")
+  temptempseq[i,1] <- paste(temp[which(names(temp)==finalnameseq[i,1])],collapse="")
+  finalnameseq[i,2] <- paste(finalnameseq[i,2],temptempseq[i,1],collapse="")
 }
 
 finalnameseq <- gsub("\\s","",finalnameseq)
@@ -40,33 +48,40 @@ for (j in listofphylipfiles[-1]) {
   locusname <- gsub("-","_",gsub(".phy.*","",j))
   # Extracting the sequence
   firstrows <- unlist(strsplit(temp[2:(1+notaxa)],"\\s"))
-  firstrows <- firstrows[-which(firstrows=="")]
-  tempnames <- unlist(strsplit(firstrows,"\\s"))[seq(1,length(firstrows),round(length(firstrows)/notaxa))]
+  if (length(which(firstrows==""))>0) {
+    firstrows <- firstrows[-which(firstrows=="")]
+  }
+  
+  tempseq <- matrix(nrow=dim(finalnameseq)[1],ncol=2)
+  tempseq[,1] <- unlist(strsplit(firstrows,"\\s"))[seq(1,length(firstrows),round(length(firstrows)/notaxa))]
   restofseq <- gsub("\\s","",unlist(strsplit(firstrows,"\\s"))[-seq(1,length(firstrows),round(length(firstrows)/notaxa))])
   # Getting the start position for this locus
   starpos <- nchar(finalnameseq[1,2])+1
-  # Getting the first sequence together
-  tempseq <- matrix(nrow=dim(finalnameseq)[1],ncol=1)
+  # Getting the first rows of sequence together
   for (i in 1:dim(tempseq)[1]) {
-    tempseq[i,1] <- paste(restofseq[
+    tempseq[i,2] <- paste(restofseq[
       (1+(i-1)*length(restofseq)/notaxa):((1+(i-1)*length(restofseq))/notaxa+length(restofseq)/notaxa)],collapse="")
   }
-  temp <- temp[-which(temp=="")]
+  if (length(which(temp==""))>0) {
+    temp <- temp[-which(temp=="")]
+  }
   temp <- temp[-(1:(notaxa+1))]
   temp <- gsub("\\s","",temp)
-  names(temp) <- rep(tempnames,round(length(temp)/notaxa))
+  names(temp) <- rep(tempseq[,1],round(length(temp)/notaxa))
 
+  temptempseq <- matrix(nrow=dim(finalnameseq)[1])
+  
   for (i in 1:dim(tempseq)[1]) {
-    tempseq[i,1] <- paste(tempseq[i,1],temp[which(names(temp)==tempnames[i])],collapse="")
+    temptempseq[i,1] <- paste(temp[which(names(temp)==tempseq[i,1])],collapse="")
+    tempseq[i,2] <- paste(tempseq[i,2],temptempseq[i,1],collapse="")
   }
   
-  tempseq <- gsub("\\s","",tempseq)[,1]
-  names(tempseq) <- tempnames
-  
+  tempseq <- gsub("\\s","",tempseq)
+
   for (i in 1:dim(finalnameseq)[1]) {
-    finalnameseq[i,2] <- paste(finalnameseq[i,2],tempseq[which(names(tempseq)==finalnameseq[i,1])],collapse="")
+    finalnameseq[i,2] <- paste(finalnameseq[i,2],tempseq[which(tempseq[,1]==finalnameseq[i,1]),2],collapse="")
   }
-  
+
   finalnameseq <- gsub("\\s","",finalnameseq)
   
   tempchrsettable <- paste("CHARSET ",locusname, " = ",starpos,"-",nchar(finalnameseq[1,2]),";",sep="")
