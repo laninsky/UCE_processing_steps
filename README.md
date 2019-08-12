@@ -286,3 +286,14 @@ https://github.com/laninsky/Missing_data_for_UCE_loci
 
 ## Assembling mitogenomes and other off-target regions
 Check out the folder 'extracting_non_UCEs'
+
+## Version history
+First written for:  
+Alexander, A.M., Su, Y.C., Oliveros, C.H., Olson, K.V., Travers, S.L. and Brown, R.M., 2017. Genomic data reveals potential for hybridization, introgression, and incomplete lineage sorting to confound phylogenetic relationships in an adaptive radiation of narrow‐mouth frogs. Evolution, 71(2), pp.475-488.
+
+Modifed for:
+Baca SM, Alexander A, Gustafson GT, Short AE. Ultraconserved elements show utility in phylogenetic inference of A dephaga (C oleoptera) and suggest paraphyly of ‘Hydradephaga’. Systematic Entomology. 2017 Oct;42(4):786-95.
+
+[This section](https://github.com/laninsky/UCE_processing_steps#obtaining-nex-file-for-use-with-httpsgithubcomtagliacollopfinderuce-swsc-en) modified with:
+Beetles TBD
+
