@@ -224,7 +224,9 @@ Alternately, instead of not partitioning, or partitioning on cloudforest models,
 ```
 Rscript partition_by_locus.R
 ```
-This will output a file `outputdata.nex`
+This will output a file `outputdata.nex`  
+
+Note: you can also achieve this with phyluce using the format_nexus_files_for_raxml script and the --nexus and --charsets flags (thanks to Dr. Michael Branstetter for pointing this out).
 
 ## Getting the ASTRID and ASTRAL species trees based off gene trees
 
