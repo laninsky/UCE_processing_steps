@@ -220,7 +220,7 @@ awk '{print $5}' genetrees.tre > inputgenetrees.tre
 ```
 
 ## Obtaining \*.nex file for use with https://github.com/Tagliacollo/PFinderUCE-SWSC-EN
-Alternately, instead of not partitioning, or partitioning on cloudforest models, you might want to use PFinderUCE-SWSC-EN. In this case, the data needs to be partitioned by locus. This script should be run in your phylip_w_missing folder (e.g. every taxon should be present for every UCE). Once inside that folder:
+Alternately, instead of not partitioning, or partitioning on cloudforest models, you might want to use PFinderUCE-SWSC-EN. In this case, the data needs to be partitioned by locus. This script should be run in your phylip_w_missing folder e.g. every taxon should be present for every UCE i.e. it should be run in the phyluce output folder that has a separate phylip file per locus, but where you have each taxon present (missing data has been "added" based on the phyluce pipeline. The code we used for this is [here](https://github.com/laninsky/UCE_processing_steps#adding-missing-data-designators), but names have to be lower case and the adding-missing-data-designators script has to be run with --verbatim for it to work due to this [phyluce issue](https://github.com/faircloth-lab/phyluce/issues/34). Thanks for flagging this @ymilesz !). Once you have your phylip_w_missing folder, inside that folder:
 ```
 Rscript partition_by_locus.R
 ```
